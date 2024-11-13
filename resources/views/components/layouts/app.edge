@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Ruralmerce</title>
+    @vite(['resources/js/app.js', 'resources/css/app.css'])
+
+  </head>
+  <body>
+    <section>
+      <div>
+        @include('components/layouts/partials/header')
+
+        <div>
+          {{{ await $slots.main() }}}
+        </div>
+      </div>
+    </section>
+  </body>
+</html>
