@@ -1,16 +1,15 @@
 import { BaseSchema } from '@adonisjs/lucid/schema'
 
 export default class extends BaseSchema {
-  protected tableName = 'recipes'
+  protected tableName = 'recipe_ingredients'
 
   async up() {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id').primary()
-      table.string('title')
-      table.string("image")
-      table.string("instructions")
-      table.string("cuisine")
-      table.string('image_type')
+      table.integer('quantity')
+      table.integer('recipe_id').unsigned().references('recipes.id')
+      table.integer('ingredient_id').unsigned().references('ingredients.id')
+      table.unique(['recipe_id', 'ingredient_id'])
       table.timestamp('created_at')
       table.timestamp('updated_at')
     })
