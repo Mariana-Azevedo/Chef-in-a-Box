@@ -14,5 +14,5 @@ router
 
   router.get('/recipes', [RecipesController, 'index']).as('recipes.index')
   router.get('/recipes/:id', [RecipesController, 'show']).as('recipes.show')
-  router.post('/recipes/:query', [RecipesController, 'store']).as('recipes.store')
+  router.post('/recipes', [RecipesController, 'store']).as('recipes.store')
 
