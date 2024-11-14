@@ -14,7 +14,11 @@ router
   .as('users')
 
   router.get('/', ({view}) => {
-    return view.render('pages/login')
+    return view.render('pages/loginForm.edge')
+  })
+
+  router.get('/Criar-conta', ({view}) => {
+    return view.render('pages/criarConta.edge')
   })
 
   router.get('/recipes', [RecipesController, 'index']).as('recipes.index')
