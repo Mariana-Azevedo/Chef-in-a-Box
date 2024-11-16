@@ -21,6 +21,11 @@ router
     return view.render('pages/criarConta.edge')
   })
 
+  router.get('/home', ({view}) => {
+    return view.render('pages/home.edge')
+  })
+  //router.get('/criarConta', [RecipesController, 'index']).as('criarConta.edge')
+
   router.get('/recipes', [RecipesController, 'index']).as('recipes.index')
   router.get('/recipes/:id', [RecipesController, 'show']).as('recipes.show')
   router.post('/recipes', [RecipesController, 'store']).as('recipes.store')
