@@ -1,5 +1,7 @@
 import Ingredient from '#models/ingredient';
 import Recipe from '#models/recipe'
+import { createIngredientValidator } from '#validators/ingredient';
+import { createRecipeValidator } from '#validators/recipe';
 import { HttpContext } from '@adonisjs/core/http';
 
 const apiKey = 'e3de9d1c35ed4c3f91bc95f00bfcb0f1';
@@ -21,7 +23,11 @@ export default class RecipesController{
   }
 
   async store({ request, response }: HttpContext) {
-    const data = request.only(['title', 'instructions', 'cuisine', 'image', 'imageType'])
+    
+    const payload = request.only(['title', 'instructions', 'cuisine', 'image', 'imageType'])
+
+    const data = await createRecipeValidator.validate(payload)
+
     const ingredients = request.input('ingredients') // Array com os ingredientes e suas quantidades
   
     try {
@@ -37,14 +43,16 @@ export default class RecipesController{
       const ingredientData: { [key: number]: { quantity: number } } = {}
     
       for (const ingredient of ingredients) {
+
+        const ingredientAuth = await createIngredientValidator.validate(ingredient)
         // Busca ou cria o ingrediente
         const ingredientInstance = await Ingredient.firstOrCreate(
-          { name: ingredient.name },
-          { description: ingredient.description, unit: ingredient.unit, price: ingredient.price }
+          { name: ingredientAuth.name },
+          { description: ingredientAuth.description, unit: ingredientAuth.unit, price: ingredientAuth.price }
         )
     
         // Armazena o ID e a quantidade para inserir na tabela de junção
-        ingredientData[ingredientInstance.id] = { quantity: ingredient.quantity }
+        ingredientData[ingredientInstance.id] = { quantity: ingredientAuth.quantity }
       }
     
       // Associa os ingredientes à receita com as quantidades
