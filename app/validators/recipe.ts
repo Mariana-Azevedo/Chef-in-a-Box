@@ -10,5 +10,6 @@ export const createRecipeValidator = vine.compile(
         instructions: vine.string().trim(),
         cuisine: vine.string().trim(),
         image: vine.string().trim(),
+        imageType: vine.string().trim(),
     })
 )

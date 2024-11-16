@@ -1,23 +1,33 @@
+import AuthController from '#controllers/auth_controller'
 import router from '@adonisjs/core/services/router'
-import ViteMiddleware from '@adonisjs/vite/vite_middleware'
+import { middleware } from './kernel.js'
+
 
 const UsersController = () => import('#controllers/users_controller')
 const RecipesController = () => import('#controllers/recipes_controller')
 
+router.on('/').render('pages/home/show').as('home.show')
+
+router.get('/login', [AuthController, 'create']).as('auth.create')
+router.post('/login', [AuthController, 'store']).as('auth.store')
+router.get('/logout', [AuthController, 'destroy']).use(middleware.auth()).as('auth.destroy')
+
 router
   .group(() => {
     router.get('/', [UsersController, 'index']).as('lista')
-    router.get('/:id', [UsersController, 'show']).where('id', router.matchers.number()).as('show')
-    router.post('/', [UsersController, 'create']).as('create')
+    //router.get('/:id', [UsersController, 'show']).where('id', router.matchers.number()).as('show')
+    router.post('/', [UsersController, 'store']).as('store')
   })
   .prefix('users')
   .as('users')
 
-  router.get('/', ({view}) => {
-    return view.render('pages/login')
+router
+  .group(() => {
+    router.get('/', [RecipesController, 'index']).as('recipes.index')
+    router.get('/:id', [RecipesController, 'show']).as('recipes.show')
+    router.post('/', [RecipesController, 'store']).as('recipes.store')
   })
+  .prefix('recipes')
+  .as('recipes')
 
-  router.get('/recipes', [RecipesController, 'index']).as('recipes.index')
-  router.get('/recipes/:id', [RecipesController, 'show']).as('recipes.show')
-  router.post('/recipes', [RecipesController, 'store']).as('recipes.store')
 
