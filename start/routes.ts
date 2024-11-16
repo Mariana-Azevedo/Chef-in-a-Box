@@ -2,6 +2,7 @@ import AuthController from '#controllers/auth_controller'
 import router from '@adonisjs/core/services/router'
 import { middleware } from './kernel.js'
 
+
 const UsersController = () => import('#controllers/users_controller')
 const RecipesController = () => import('#controllers/recipes_controller')
 
@@ -28,4 +29,5 @@ router
   })
   .prefix('recipes')
   .as('recipes')
+
 
