@@ -32,13 +32,13 @@ router
 
 router
   .group(() => {
+    router.get('/new', [RecipesController, 'create']).as('recipes.create')
     router.get('/', [RecipesController, 'index']).as('recipes.index')
     router.get('/:id', [RecipesController, 'show']).as('recipes.show')
     router.post('/', [RecipesController, 'store']).as('recipes.store')
-    router.get('/new', [RecipesController, 'create']).as('recipe.create')
   })
   .prefix('recipes')
-
+  .use(middleware.silent());
 
 
   router.get('/home', ({view}) => {
@@ -46,5 +46,7 @@ router
   })
   //router.get('/criarConta', [RecipesController, 'index']).as('criarConta.edge')
 
-
+  router.get('/test', async () => {
+    return 'Rota funcionando!'
+  })
 

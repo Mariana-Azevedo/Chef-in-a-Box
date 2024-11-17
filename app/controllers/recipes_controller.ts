@@ -32,6 +32,8 @@ export default class RecipesController{
       return {
         id: recipe.id,
         title: recipe.title,
+        description: recipe.description,
+        image: recipe.image,
         totalPrice: totalCost,
       }
     })
@@ -39,6 +41,7 @@ export default class RecipesController{
     return view.render('pages/recipes/index', { recipes: recipesWithPrices })
   }
 
+  
   async show({ params }: HttpContext) {
 
     const recipe = await Recipe.find(params.id)
@@ -90,8 +93,11 @@ export default class RecipesController{
       return response.status(500).json({ error: 'Erro ao criar a receita' })
     }
   }
-  create({ view }: HttpContext) {
-    return view.render('pages/criarConta')
+
+  async create({ view }: HttpContext) {
+
+    return view.render('pages/createRecipe')
+
   }
   
 }
