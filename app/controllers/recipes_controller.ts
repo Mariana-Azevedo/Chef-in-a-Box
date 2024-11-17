@@ -24,6 +24,7 @@ export default class RecipesController{
 
     // Calcular o preço total de cada receita
     const recipesWithPrices = recipes.toJSON().data.map((recipe) => {
+      console.log(recipesWithPrices);
       const totalCost = recipe.ingredients.reduce(
         (total: number, ingredient: { price: number; pivot_quantity: number }) => total + ingredient.price * ingredient.pivot_quantity,
         0
@@ -32,6 +33,8 @@ export default class RecipesController{
       return {
         id: recipe.id,
         title: recipe.title,
+        description: recipe.description,
+        image: recipe.image,
         totalPrice: totalCost,
       }
     })
@@ -90,8 +93,8 @@ export default class RecipesController{
       return response.status(500).json({ error: 'Erro ao criar a receita' })
     }
   }
-  create({ view }: HttpContext) {
-    return view.render('pages/criarConta')
+  async create({ view }: HttpContext) {
+    return view.render('pages/createRecipe.edge')
   }
   
 }

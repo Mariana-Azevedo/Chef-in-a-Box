@@ -35,7 +35,7 @@ router
     router.get('/', [RecipesController, 'index']).as('recipes.index')
     router.get('/:id', [RecipesController, 'show']).as('recipes.show')
     router.post('/', [RecipesController, 'store']).as('recipes.store')
-    router.get('/new', [RecipesController, 'create']).as('recipe.create')
+    router.get('/new', [RecipesController, 'create']).as('recipes.create')
   })
   .prefix('recipes')
 

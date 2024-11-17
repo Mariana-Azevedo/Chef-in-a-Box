@@ -18,7 +18,7 @@
   </div>
   <div class="navbar-end">
     <div class="form-control">
-      <input type="text" placeholder="Search" class="input input-bordered w-24 md:w-auto" />
+      <input type="text" placeholder="Search" class="input input-bordered text-black w-24 md:w-auto" />
     </div>
     <div class="flex-none">
       <div class="dropdown dropdown-end">
@@ -47,7 +47,7 @@
       @else
         <p>Usuário não autenticado</p>
       @endif  --}}
-      @if(!auth.isAuthenticated)
+      @if(auth.isAuthenticated)
       <div class="dropdown dropdown-end">
         <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar">
           <div class="w-10 rounded-full">
