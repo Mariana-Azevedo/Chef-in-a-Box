@@ -5,7 +5,7 @@ const AuthController = () => import('#controllers/auth_controller')
 const UsersController = () => import('#controllers/users_controller')
 const RecipesController = () => import('#controllers/recipes_controller')
 
- router.on('/').render('pages/home/home').as('home.show')
+ router.on('/').render('pages/home/home').as('home.show').use(middleware.silent());
 
 
 router.get('/login', [AuthController, 'create']).as('auth.create')
@@ -35,9 +35,10 @@ router
     router.get('/', [RecipesController, 'index']).as('recipes.index')
     router.get('/:id', [RecipesController, 'show']).as('recipes.show')
     router.post('/', [RecipesController, 'store']).as('recipes.store')
+    router.get('/new', [RecipesController, 'create']).as('recipe.create')
   })
   .prefix('recipes')
-  .as('recipes')
+
 
 
   router.get('/home', ({view}) => {
