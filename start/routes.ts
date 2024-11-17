@@ -5,11 +5,21 @@ const AuthController = () => import('#controllers/auth_controller')
 const UsersController = () => import('#controllers/users_controller')
 const RecipesController = () => import('#controllers/recipes_controller')
 
-router.on('/').render('pages/home/home').as('home.show')
+ router.on('/').render('pages/home/home').as('home.show')
+
 
 router.get('/login', [AuthController, 'create']).as('auth.create')
 router.post('/login', [AuthController, 'store']).as('auth.store')
 router.get('/logout', [AuthController, 'destroy']).use(middleware.auth()).as('auth.destroy')
+
+router.get('/test-protected', async ({ auth, response }) => {
+  if (auth.isAuthenticated) {
+    return response.json({ message: 'Rota protegida acessada com sucesso!', user: auth.user });
+  } else {
+    return response.unauthorized({ error: 'Usuário não autenticado' });
+  }
+}).use(middleware.auth());
+
 
 router
   .group(() => {
