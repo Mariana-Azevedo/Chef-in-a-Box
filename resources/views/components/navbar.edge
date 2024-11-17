@@ -43,9 +43,10 @@
         </div>
       </div>
       @if(auth.isAuthenticated)
-      <p>Usuário autenticado</p>
+      <p> Hello {{ auth.user.email }} </p>
       @else
-      <p>Usuário não autenticado</p>
+      <a href="{{route('auth.create')}}">Login</a>
+      <a href="{{route('users.create')}}">Criar Conta</a>
       @endif
       {{-- @if(auth.isAuthenticated)
       <div class="dropdown dropdown-end">

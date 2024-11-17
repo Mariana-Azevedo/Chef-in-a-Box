@@ -4,16 +4,39 @@ import { createIngredientValidator } from '#validators/ingredient';
 import { createRecipeValidator } from '#validators/recipe';
 import { HttpContext } from '@adonisjs/core/http';
 
-const apiKey = 'e3de9d1c35ed4c3f91bc95f00bfcb0f1';
-
 export default class RecipesController{
 
-  async index() {
+  public async index({ view, request }: HttpContext) {
+    const page = request.input('page', 1)
+    const limit = 10
 
-    const recipes = await Recipe.all()
+    const payload = request.only(['title'])
 
-    return recipes
+    const query = Recipe.query().preload('ingredients', (ingredientQuery) => {
+      ingredientQuery.select('price', 'pivot_quantity') // Preload dos preços e quantidades
+    })
 
+    if (payload.title && payload.title.length > 0) {
+      query.where('title', 'like', `%${payload.title}%`)
+    }
+
+    const recipes = await query.paginate(page, limit)
+
+    // Calcular o preço total de cada receita
+    const recipesWithPrices = recipes.toJSON().data.map((recipe) => {
+      const totalCost = recipe.ingredients.reduce(
+        (total: number, ingredient: { price: number; pivot_quantity: number }) => total + ingredient.price * ingredient.pivot_quantity,
+        0
+      )
+
+      return {
+        id: recipe.id,
+        title: recipe.title,
+        totalPrice: totalCost,
+      }
+    })
+
+    return view.render('pages/recipes/index', { recipes: recipesWithPrices })
   }
 
   async show({ params }: HttpContext) {
@@ -66,6 +89,9 @@ export default class RecipesController{
       console.error(error)
       return response.status(500).json({ error: 'Erro ao criar a receita' })
     }
+  }
+  create({ view }: HttpContext) {
+    return view.render('pages/criarConta')
   }
   
 }
