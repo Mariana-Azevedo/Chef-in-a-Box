@@ -1,40 +1,40 @@
 @layouts.app()
 <div class="hero bg-base-200 min-h-screen">
-    <div class="hero-content flex-col  w-5/6 lg:flex-colum-reverse">
-        <div class="text-center lg:text-left">
-          @!titulo({label: 'Cadastre-se'}) 
-            @!texto({label: ' Digite seus dados nos campos abaixo.'})
-        </div>
-        <div class="card bg-base-100 w-full max-w-sm shrink-0 shadow-2xl">
-          @form({
-            action: route('users.store'),
-            method: 'POST',
-            class: 'space-y-6',
-          }) 
-            <div class="form-control">
-            @!input()
-              <label class="label">
-                <span class="label-text">Email</span> 
-              </label>
-              <div class="form-control">
-                @!emailInput()
-              </div>
-            </div>
-            <div class="form-control">
-              <label class="label">
-                <span class="label-text">Senha</span>
-              </label>
-              @!senha()
-            </div>
-            <div class="form-control">
-                <label class="label">
-                    <span class="label-text">Confirme a senha</span>
-                </label>
-                @!senha()
-            </div>    
-            @!button({ label: 'Criar', colorClass: 'btn-primary' })
-          @end
-        </div>
-      </div>
+  <div class="hero-content flex-col  w-5/6 lg:flex-colum-reverse">
+    <div class="text-center lg:text-left">
+      @!login.titulo({label: 'Cadastre-se'})
+      @!login.texto({label: ' Digite seus dados nos campos abaixo.'})
     </div>
+    <div class="card bg-base-100 w-full max-w-sm shrink-0 shadow-2xl">
+      @login.form({
+      action: route('users.store'),
+      method: 'POST',
+      class: 'space-y-6',
+      })
+      <div class="form-control">
+        @!login.input()
+        <label class="label">
+          <span class="label-text">Email</span>
+        </label>
+      </div>
+      <div class="form-control">
+        @!login.emailInput()
+      </div>
+      <div class="form-control">
+        <label class="label">
+          <span class="label-text">Senha</span>
+        </label>
+        @!login.senha()
+      </div>
+      <div class="form-control">
+        <label class="label">
+          <span class="label-text">Confirme a senha</span>
+        </label>
+        @!login.senhaConfirma()
+      </div>
+      @!button({ label: 'Criar', colorClass: 'btn-primary' })
+    </div>
+    @end
+  </div>
+</div>
 @end

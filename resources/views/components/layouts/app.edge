@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Ruralmerce</title>
+    <title>Chef in a box</title>
     @vite(['resources/js/app.js', 'resources/css/app.css'])
 
   </head>
@@ -9,8 +9,7 @@
     <section>
       <div>
         @include('components/layouts/partials/header')
-
-        <div>
+        <div >
           {{{ await $slots.main() }}}
         </div>
       </div>

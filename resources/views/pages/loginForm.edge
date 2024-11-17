@@ -2,22 +2,25 @@
 <div class="hero bg-base-200 min-h-screen">
   <div class="hero-content flex-col  w-5/6 lg:flex-colum-reverse">
       <div class="text-center lg:text-left">
-        @!titulo({label: 'Faça o seu login'}) 
-          @!texto({label: ' Digite seus dados nos campos abaixo.'})
+        @!login.titulo({label: 'Faça o seu login'}) 
+          @!login.texto({label: ' Digite seus dados nos campos abaixo.'})
       </div>
       <div class="card bg-base-100 w-full max-w-sm shrink-0 shadow-2xl">
-  <form class="card-body">
+  @login.form({
+      action: route('users.store'),
+      method: 'POST',
+    }) 
     <div class="form-control">
             <label class="label">
               <span class="label-text">Email</span> 
             </label>
-            @!emailInput()
+            @!login.emailInput()
           </div>
           <div class="form-control">
             <label class="label">
               <span class="label-text">Senha</span>
             </label>
-            @!senha()
+            @!login.senha()
             <label class="label">
               <a href="#" class="label-text-alt link link-hover">Esqueceu sua senha?</a>
             </label>
@@ -25,11 +28,10 @@
           <div class="form-control mt-6">
             <button class="btn btn-primary">Login</button>
           </div>         
-          @!button({ label: 'Criar conta' })
-          
+          <a class="link link-primary" href="{{ route('users.create') }}"> Não tem conta? Criar conta</a>
         </form>
       </div>
     </div>
   </div>
- 
-  @end
+ @end
+@end
