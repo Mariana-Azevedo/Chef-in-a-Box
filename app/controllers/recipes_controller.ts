@@ -42,6 +42,7 @@ export default class RecipesController{
     return view.render('pages/recipes/index', { recipes: recipesWithPrices })
   }
 
+  
   async show({ params }: HttpContext) {
 
     const recipe = await Recipe.find(params.id)
@@ -93,8 +94,11 @@ export default class RecipesController{
       return response.status(500).json({ error: 'Erro ao criar a receita' })
     }
   }
+
   async create({ view }: HttpContext) {
-    return view.render('pages/createRecipe.edge')
+
+    return view.render('pages/createRecipe')
+
   }
   
 }
