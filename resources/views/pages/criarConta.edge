@@ -6,9 +6,13 @@
             @!texto({label: ' Digite seus dados nos campos abaixo.'})
         </div>
         <div class="card bg-base-100 w-full max-w-sm shrink-0 shadow-2xl">
-    <form class="card-body">
+          @form({
+            action: route('users.store'),
+            method: 'POST',
+            class: 'space-y-6',
+          }) 
             <div class="form-control">
-             @!input()
+            @!input()
               <label class="label">
                 <span class="label-text">Email</span> 
               </label>
@@ -21,9 +25,6 @@
                 <span class="label-text">Senha</span>
               </label>
               @!senha()
-              <label class="label">
-                <a href="#" class="label-text-alt link link-hover">Esqueceu sua senha?</a>
-              </label>
             </div>
             <div class="form-control">
                 <label class="label">
@@ -32,8 +33,7 @@
                 @!senha()
             </div>    
             @!button({ label: 'Criar', colorClass: 'btn-primary' })
-            
-          </form>
+          @end
         </div>
       </div>
     </div>

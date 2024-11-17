@@ -68,6 +68,25 @@ export default class RecipesController{
     }
   }
   
+  public async destroy({ params, response }: HttpContext) {
+    const recipeId = params.id
+
+    try {
+      // Busca a receita pelo ID
+      const recipe = await Recipe.findOrFail(recipeId)
+
+      // Remove os relacionamentos na tabela `recipe_ingredients`
+      await recipe.related('ingredients').detach()
+
+      // Apaga a receita
+      await recipe.delete()
+
+      return response.status(200).json({ message: 'Receita e relacionamentos apagados com sucesso!' })
+    } catch (error) {
+      console.error(error)
+      return response.status(500).json({ error: 'Erro ao apagar a receita' })
+    }
+  }
 }
 
 
