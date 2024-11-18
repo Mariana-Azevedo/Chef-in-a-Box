@@ -1,57 +1,62 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Detalhes da Receita</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      line-height: 1.6;
-    }
-    .recipe-container {
-      max-width: 800px;
-      margin: 20px auto;
-      padding: 20px;
-      border: 1px solid #ddd;
-      border-radius: 8px;
-    }
-    .recipe-header {
-      text-align: center;
-    }
-    .recipe-image {
-      max-width: 100%;
-      height: auto;
-      border-radius: 8px;
-    }
-    .ingredients-list {
-      margin: 20px 0;
-    }
-    .ingredient-item {
-      margin-bottom: 8px;
-    }
-  </style>
-</head>
-<body>
-  <div class="recipe-container">
-    <div class="recipe-header">
-      <h1>{{ recipe.title }}</h1>
-      <img src="{{ recipe.image }}" alt="{{ recipe.title }}" class="recipe-image">
-    </div>
+@layouts.app()
+@!navbar()
+<div class="flex">
+  <div class="p-12">
+    <div class="flex flex-row">
+      <figure class="w-full lg:w-1/2">
+        <img src="{{ recipe.image }}" alt="{{ recipe.title }}" class="w-full h-auto object-cover rounded-lg" />
+      </figure>
+      <div class="flex flex-col ps-6">
+        <h1 class="text-7xl font-bold py-7">{{ recipe.title }}</h1>
+        <p class="text-3xl"><strong>Preço Total:</strong> R$ {{ recipe.totalPrice.toFixed(2) }}</p>
 
+        <h2 class="mt-4 text-lg font-bold">Instruções:</h2>
+        <p>{{ recipe.instructions }}</p>
+
+        <h2 class="mt-4 text-lg font-bold">Ingredientes:</h2>
+        <ul class="list-disc list-inside">
+          @each(ingredient in recipe.ingredients)
+          <li>
+            {{ ingredient.name }} - R$ {{ ingredient.price.toFixed(2) }} (Quantidade: {{ ingredient.quantity }})
+          </li>
+          @endeach
+        </ul>
+
+
+        <div class="card-actions justify-end mt-4">
+          <button class="btn btn-primary">Comprar</button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+{{--  <div class="card lg:card-side bg-base-100 shadow-xl
+">
+  <figure class="w-full h-auto ">
+    <img src="{{ recipe.image }}" alt="{{ recipe.title }}" class="w-full h-64 object-cover rounded-lg" />
+  </figure>
+  <div class="card-body lg:w-1/2">
+    <h2 class="card-title">{{ recipe.title }}</h2>
     <p><strong>Preço Total:</strong> R$ {{ recipe.totalPrice.toFixed(2) }}</p>
 
-    <h2>Ingredientes:</h2>
-    <ul class="ingredients-list">
+    <h2 class="mt-4 text-lg font-bold">Ingredientes:</h2>
+    <ul class="list-disc list-inside">
       @each(ingredient in recipe.ingredients)
-        <li class="ingredient-item">
-          {{ ingredient.name }} - R$ {{ ingredient.price.toFixed(2) }} (Quantidade: {{ ingredient.quantity }})
-        </li>
+      <li>
+        {{ ingredient.name }} - R$ {{ ingredient.price.toFixed(2) }} (Quantidade: {{ ingredient.quantity }})
+      </li>
       @endeach
     </ul>
 
-    <h2>Instruções:</h2>
+    <h2 class="mt-4 text-lg font-bold">Instruções:</h2>
     <p>{{ recipe.instructions }}</p>
+
+    <div class="card-actions justify-end mt-4">
+      <button class="btn btn-primary">Voltar</button>
+    </div>
   </div>
-</body>
-</html>
+</div>  --}}
+
+@end

@@ -31,7 +31,7 @@ export default class RecipesController{
       totalPrice: recipe.ingredients.reduce((acc, ingredient) => acc+ingredient.price*ingredient.$extras.pivot_quantity,0)
     }))
 
-    return view.render('pages/home/showRecipes', { recipes: recipesWithPrices })
+    return view.render('pages/home/index', { recipes: recipesWithPrices })
   }
 
   
