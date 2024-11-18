@@ -27,7 +27,7 @@ router
     router.get('/create', [UsersController, 'create']).as('users.create')
     //router.get('/:id', [UsersController, 'show']).where('id', router.matchers.number()).as('show')
     router.post('/', [UsersController, 'store']).as('users.store')
-   // router.patch('/id', [UsersController, 'update']).as('users.update')
+    router.patch('/:id', [UsersController, 'patch']).as('users.patch')
   })
   .prefix('users')
 
