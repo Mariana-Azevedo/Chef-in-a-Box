@@ -3,9 +3,10 @@
 <div class="flex">
   <div class="p-12">
     <div class="flex flex-row">
-      <figure class="w-full lg:w-1/2">
-        <img src="{{ recipe.image }}" alt="{{ recipe.title }}" class="w-full h-auto object-cover rounded-lg" />
-      </figure>
+      <div class="artboard artboard-horizontal phone-5">
+          <img src="{{ recipe.image }}" alt="{{ recipe.title }}" class="w-full h-auto object-cover rounded-lg" />
+      </div>
+
       <div class="flex flex-col ps-6">
         <h1 class="text-7xl font-bold py-7">{{ recipe.title }}</h1>
         <p class="text-3xl"><strong>Preço Total:</strong> R$ {{ recipe.totalPrice.toFixed(2) }}</p>

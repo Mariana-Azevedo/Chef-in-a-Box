@@ -1,3 +1,52 @@
-@layouts.app() 
-    @!navbar() 
+@layouts.app()
+@!navbar()
+@login.loginCard(
+  
+)
+<h1>Bem vindo ao seu perfil {{returnUser.fullName}} !</h1>
+<p>Aqui você pode visualizar as informações do seu perfil e editá-las, se desejar.</p>
+<div class="overflow-x-auto">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Nome</th>
+                <th>Email</th>
+                <th>Senha</th>
+                <th>Editar</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <th>
+                <div>
+                    {{returnUser.id}}
+                </div>
+                </th>
+                <td>
+                    <div class="flex items-center gap-3">
+                        {{returnUser.fullName}}
+                        <div>
+                </td>
+                <td>
+                    <div>
+                        {{returnUser.email}}
+                    </div>
+                </td>
+                <td>....</td>
+                <th>
+                    <button class="btn btn-ghost btn-xs">details</button>
+                </th>
+            </tr>
+            <tfoot>
+                <tr>
+                  <th></th>
+                  <th> <button class="btn btn-ghost btn-xs">Editar</button></th>
+                  <th><button class="btn btn-ghost btn-xs">Editar</button></th>
+                  <th><button class="btn btn-ghost btn-xs">Editar</button></th>
+                  <th></th>
+                </tr>
+              </tfoot>
+</div>
+@end
 @end

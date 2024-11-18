@@ -52,13 +52,14 @@ export default class UsersController {
   }
 
   public async profile({ view, params }: HttpContext) {
-
+    console.log(params.id)
     const userId = params.id;
-    const user = await User.findByOrFail(userId)
+    const user = await User.findByOrFail('id',userId)
 
     const returnUser ={
       fullName: user.fullName,
-      email: user.email
+      email: user.email,
+      id: user.id,
     } 
     
     return view.render('pages/user/profile', { returnUser })
