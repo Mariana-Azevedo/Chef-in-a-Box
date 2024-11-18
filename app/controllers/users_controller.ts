@@ -50,5 +50,18 @@ export default class UsersController {
       });
     }
   }
+
+  public async profile({ view, params }: HttpContext) {
+
+    const userId = params.id;
+    const user = await User.findByOrFail(userId)
+
+    const returnUser ={
+      fullName: user.fullName,
+      email: user.email
+    } 
+    
+    return view.render('pages/user/profile', { returnUser })
+  }
 }
 
