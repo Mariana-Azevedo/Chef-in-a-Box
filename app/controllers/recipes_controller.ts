@@ -13,7 +13,7 @@ export default class RecipesController{
     const payload = request.only(['title'])
 
     const query = Recipe.query().preload('ingredients', (ingredientQuery) => {
-      ingredientQuery.select('price', 'pivot_quantity') // Preload dos preços e quantidades
+      ingredientQuery.select('id', 'price').pivotColumns(['quantity']) // Inclua pivotColumns(['quantity'])
     })
 
     if (payload.title && payload.title.length > 0) {
@@ -21,24 +21,17 @@ export default class RecipesController{
     }
 
     const recipes = await query.paginate(page, limit)
-
+    
     // Calcular o preço total de cada receita
-    const recipesWithPrices = recipes.toJSON().data.map((recipe) => {
-      const totalCost = recipe.ingredients.reduce(
-        (total: number, ingredient: { price: number; pivot_quantity: number }) => total + ingredient.price * ingredient.pivot_quantity,
-        0
-      )
+    const recipesWithPrices = recipes.map(recipe => ({
+      id: recipe.id,
+      title: recipe.title,
+      instructions: recipe.instructions,
+      image: recipe.image,
+      totalPrice: recipe.ingredients.reduce((acc, ingredient) => acc+ingredient.price*ingredient.$extras.pivot_quantity,0)
+    }))
 
-      return {
-        id: recipe.id,
-        title: recipe.title,
-        description: recipe.description,
-        image: recipe.image,
-        totalPrice: totalCost,
-      }
-    })
-
-    return view.render('pages/recipes/index', { recipes: recipesWithPrices })
+    return view.render('pages/index', { recipes: recipesWithPrices })
   }
 
   
