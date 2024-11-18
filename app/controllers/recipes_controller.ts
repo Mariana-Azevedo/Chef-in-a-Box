@@ -39,7 +39,7 @@ export default class RecipesController{
       }
     })
 
-    return view.render('pages/recipes/index', { recipes: recipesWithPrices })
+    return view.render('pages/home/home', { recipes: recipesWithPrices })
   }
 
   

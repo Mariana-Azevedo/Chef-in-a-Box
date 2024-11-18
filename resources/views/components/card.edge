@@ -1,19 +1,30 @@
-@each(recipe in recipes)
 <div class="card bg-base-100 w-96 shadow-xl">
-  <figure>
+  @each(recipe in recipes)
+  {{-- <figure>
     <img src="{{ recipe.image }}" alt="{{ recipe.title }}" class="w-full h-40 object-cover" />
-  </figure>
+  </figure> --}}
   <div class="card-body">
     <div class="flex flex-row justify-between items-center">
       <h2 class="card-title">{{ recipe.title }}</h2>
-      <span class="text-lg font-bold text-primary">R${{ recipe.totalPrice.toFixed(2) }}</span>
     </div>
-
-    <p>{{ recipe.description }}</p>
+    {{-- <span class="text-lg font-bold text-primary">R${{ recipe.totalPrice.toFixed(2) }}</span> --}}
+    {{-- <p>{{ recipe.description }}</p> --}}
     <div class="card-actions justify-end">
       {{-- <button class="btn btn-primary">Buy Now</button> --}}
-      <a href="/recipes/{{ recipe.id }}" class="btn btn-primary">Ver mais</a>
+      {{-- <a href="/recipes/{{ recipe.id }}" class="btn btn-primary">Ver mais</a> --}}
+    </div>
+  </div>
+  @else
+  <p>ola</p>
+  @end
+</div>
+
+{{-- @each(recipe in recipes)
+<div class="card bg-base-100 w-96 shadow-xl">
+  <div class="card-body">
+    <div class="flex flex-row justify-between items-center">
+      <h2 class="card-title">{{ recipe.title }}</h2>
     </div>
   </div>
 </div>
-@endeach
+@end --}}

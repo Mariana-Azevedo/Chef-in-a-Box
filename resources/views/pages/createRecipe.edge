@@ -1,3 +1,45 @@
 @layouts.app()
-  @!footer() 
+@!navbar()
+<h1 class="text-5xl font-bold m-6 ">Criar receita</h1>
+<div class="grid ml-12 justify-items-stretch">
+  @!login.input({label: 'Título'} )
+  <label class="form-control">
+    <div class="label">
+      <span class="label-text">Descrição</span>
+    </div>
+    <textarea class="textarea textarea-bordered h-24 w-96" placeholder="Bio"></textarea>
+  </label>
+  @!login.input({label: 'Culinária'} )
+
+  @!login.input({label: 'URL'} )
+
+  @!login.input({label: 'Tipo de imagem'} )
+
+  <!-- Open the modal using ID.showModal() method -->
+  <button class="btn mt-4 w-80" onclick="my_modal_1.showModal()">Adicionar ingrediente</button>
+  <dialog id="my_modal_1" class="modal">
+    <div class="modal-box">
+      <h1 class="text-lg font-bold">Preencha os dados abaixo</h1>
+      @!login.input({label: 'Nome'} )
+      <label class="form-control">
+        <div class="label">
+          <span class="label-text">Descrição</span>
+        </div>
+        <textarea class="textarea textarea-bordered h-24 w-96" placeholder="Bio"></textarea>
+      </label>
+      @!login.input({label: 'Unidade'} )
+      @!login.input({label: 'Preço'} )
+      @!login.input({label: 'URL'} )
+      @!login.input({label: 'Quantidade'} )
+      <div class="modal-action">
+        <form method="dialog">
+          <!-- if there is a button in form, it will close the modal -->
+          <button class="btn">Salvar</button>
+        </form>
+      </div>
+    </div>
+  </dialog>
+  @button( { label: 'Salvar', colorClass: 'btn-primary', extraClass: 'w-96 mt-4' } )
+  @end
+</div>
 @end
