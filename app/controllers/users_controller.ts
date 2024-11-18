@@ -20,4 +20,35 @@ export default class UsersController {
     await user.save()
     return response.redirect().toRoute('auth.create')
   }
+
+  public async patch({ request, response, params }: HttpContext) {
+    const userId = params.id;
+
+    try {
+      // Busca o usuário ou lança erro se não encontrado
+      const user = await User.findOrFail(userId);
+
+      // Atualiza os dados diretamente usando `merge`
+      const payload = request.all();
+      const updatedData = await createUserValidator.validate(payload)
+      user.merge(updatedData);
+
+      // Hash na senha, caso seja enviado
+
+      // Salva as alterações
+      await user.save();
+
+      return response.status(200).json({
+        message: 'Usuário atualizado com sucesso.',
+        data: user,
+      });
+    } catch (error) {
+      console.error(error);
+      return response.status(500).json({
+        error: 'Erro ao atualizar o usuário.',
+        details: error.message,
+      });
+    }
+  }
 }
+
