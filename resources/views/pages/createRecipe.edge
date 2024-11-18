@@ -1,11 +1,10 @@
-@layout('layouts.main')
+@layouts.app()
 
-@section('content')
 <div class="container mx-auto p-8">
   <h1 class="text-2xl font-bold mb-4">Criar Nova Receita</h1>
 
   <form action="{{ route('recipes.store') }}" method="POST" class="space-y-6">
-    @csrf
+
 
     <!-- Campo Título -->
     <div class="form-control">
@@ -15,12 +14,28 @@
       <input type="text" name="title" id="title" class="input input-bordered w-full" placeholder="Digite o título da receita" required />
     </div>
 
-    <!-- Campo Descrição -->
+    <!-- Campo Instruções -->
     <div class="form-control">
-      <label for="description" class="label">
-        <span class="label-text">Descrição</span>
+      <label for="instruction" class="label">
+        <span class="label-text">Instruction</span>
       </label>
-      <textarea name="description" id="description" class="textarea textarea-bordered w-full" placeholder="Descreva a receita"></textarea>
+      <textarea name="instruction" id="instruction" class="textarea textarea-bordered w-full" placeholder="Descreva a receita"></textarea>
+    </div>
+
+    <!-- Campo Imagem -->
+    <div class="form-control">
+      <label for="image" class="label">
+        <span class="label-text">Imagem</span>
+      </label>
+      <textarea name="image" id="image" class="textarea textarea-bordered w-full" placeholder="URL da Imagem"></textarea>
+    </div>
+
+    <!-- Campo Tipo de Imagem -->
+    <div class="form-control">
+      <label for="imageType" class="label">
+        <span class="label-text">Tipo da Imagem</span>
+      </label>
+      <textarea name="imageType" id="imageType" class="textarea textarea-bordered w-full" placeholder="Tipo de Imagem"></textarea>
     </div>
 
     <!-- Escolher número de ingredientes -->
@@ -79,12 +94,15 @@
           <span class="label-text">Ingrediente ${i}</span>
         </label>
         <input type="text" name="ingredients[${i}][name]" class="input input-bordered mb-2 w-full" placeholder="Nome do ingrediente" required />
-        <input type="number" name="ingredients[${i}][quantity]" class="input input-bordered mb-2 w-full" placeholder="Quantidade" min="1" required />
-        <input type="number" name="ingredients[${i}][price]" class="input input-bordered w-full" placeholder="Preço (opcional)" step="0.01" />
+        <input type="text" name="ingredients[${i}][description]" class="input input-bordered mb-2 w-full" placeholder="Descrição" min="1" required />
+        <input type="text" name="ingredients[${i}][unit]" class="input input-bordered w-full" placeholder="Unidade " step="0.01" />
+        <input type="text" name="ingredients[${i}][image]" class="input input-bordered w-full" placeholder="Imagem " step="0.01" />
+        <input type="text" name="ingredients[${i}][price]" class="input input-bordered w-full" placeholder="Preço " step="0.01" />
+        <input type="text" name="ingredients[${i}][quantity]" class="input input-bordered mb-2 w-full" placeholder="Quantidade" min="1" required />
       `;
 
       container.appendChild(ingredientDiv);
     }
   });
 </script>
-@endsection
+@end

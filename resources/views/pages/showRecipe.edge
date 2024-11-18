@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Detalhes da Receita</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+    }
+    .recipe-container {
+      max-width: 800px;
+      margin: 20px auto;
+      padding: 20px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+    }
+    .recipe-header {
+      text-align: center;
+    }
+    .recipe-image {
+      max-width: 100%;
+      height: auto;
+      border-radius: 8px;
+    }
+    .ingredients-list {
+      margin: 20px 0;
+    }
+    .ingredient-item {
+      margin-bottom: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="recipe-container">
+    <div class="recipe-header">
+      <h1>{{ recipe.title }}</h1>
+      <img src="{{ recipe.image }}" alt="{{ recipe.title }}" class="recipe-image">
+    </div>
+
+    <p><strong>Preço Total:</strong> R$ {{ recipe.totalPrice.toFixed(2) }}</p>
+
+    <h2>Ingredientes:</h2>
+    <ul class="ingredients-list">
+      @each(ingredient in recipe.ingredients)
+        <li class="ingredient-item">
+          {{ ingredient.name }} - R$ {{ ingredient.price.toFixed(2) }} (Quantidade: {{ ingredient.quantity }})
+        </li>
+      @endeach
+    </ul>
+
+    <h2>Instruções:</h2>
+    <p>{{ recipe.instructions }}</p>
+  </div>
+</body>
+</html>
