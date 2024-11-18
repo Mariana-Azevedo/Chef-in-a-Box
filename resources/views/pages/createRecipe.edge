@@ -1,76 +1,105 @@
 @layouts.app()
-
+@!navbar()
 <div class="container mx-auto p-8">
-  <h1 class="text-2xl font-bold mb-4">Criar Nova Receita</h1>
-
+  <h1 class="text-5xl font-bold m-6 ">Criar receita</h1>
   <form action="{{ route('recipes.store') }}" method="POST" class="space-y-6">
 
+    <div class="grid ml-12 justify-items-stretch">
+      @!inputGeral({
+        label: 'Título', 
+        type: 'text', 
+        name: 'title', 
+        placeholder: 'Digite o título da receita' 
+      } )
 
-    <!-- Campo Título -->
-    <div class="form-control">
-      <label for="title" class="label">
-        <span class="label-text">Título da Receita</span>
-      </label>
-      <input type="text" name="title" id="title" class="input input-bordered w-full" placeholder="Digite o título da receita" required />
-    </div>
+      {{--  <label class="form-control">
+        <div class="label">
+          <span class="label-text">Instruções</span>
+        </div>
+        <textarea name="instructions" class="textarea textarea-bordered h-24 w-96" placeholder="Bio"></textarea>
+      </label>  --}}
+      @!inputGeral({
+        label: 'Instruções', 
+        type: 'text', 
+        name: 'instructions', 
+        placeholder: 'Digite as instruções da receita'
+      } )
 
-    <!-- Campo Instruções -->
-    <div class="form-control">
-      <label for="instruction" class="label">
-        <span class="label-text">Instruction</span>
-      </label>
-      <textarea name="instruction" id="instruction" class="textarea textarea-bordered w-full" placeholder="Descreva a receita"></textarea>
-    </div>
+      @!inputGeral({
+        label: 'Culinária', 
+        type: 'text', 
+        name: 'cuisine', 
+        placeholder: 'Italiana, Brasileira ...'
+      })
 
-    <!-- Campo Imagem -->
-    <div class="form-control">
-      <label for="image" class="label">
-        <span class="label-text">Imagem</span>
-      </label>
-      <textarea name="image" id="image" class="textarea textarea-bordered w-full" placeholder="URL da Imagem"></textarea>
-    </div>
+      @!inputGeral({
+        label: 'Imagem', 
+        type: 'text', 
+        name: 'image', 
+        placeholder: 'URL'
+      })
 
-    <!-- Campo Tipo de Imagem -->
-    <div class="form-control">
-      <label for="imageType" class="label">
-        <span class="label-text">Tipo da Imagem</span>
-      </label>
-      <textarea name="imageType" id="imageType" class="textarea textarea-bordered w-full" placeholder="Tipo de Imagem"></textarea>
-    </div>
+      @!inputGeral({
+        label: 'Tipo de imagem', 
+        type: 'text', 
+        name: 'imageType', 
+        placeholder: 'jpg, '
+    })
 
-    <!-- Escolher número de ingredientes -->
-    <div class="form-control">
-      <label for="ingredientCount" class="label">
-        <span class="label-text">Quantos ingredientes?</span>
-      </label>
-      <input
-        type="number"
-        id="ingredientCount"
-        class="input input-bordered w-full"
-        placeholder="Digite a quantidade de ingredientes"
-        min="1"
-      />
-      <button
-        type="button"
-        id="generateIngredients"
-        class="btn btn-primary mt-4"
-      >
-        Adicionar Ingredientes
-      </button>
-    </div>
+      <!-- Open the modal using ID.showModal() method -->
 
-    <!-- Ingredientes Dinâmicos -->
-    <div id="ingredientsContainer" class="space-y-4 mt-6">
-      <!-- Campos de ingredientes serão gerados aqui -->
-    </div>
+      <div class="form-control">
+        @!inputGeral({
+          label: 'Quantos ingredientes?', 
+          type: 'number', 
+          name: 'qtd', 
+          placeholder: 'Quantidade',
+          id: 'ingredientCount'
+        })
+        
+        <button type="button" id="generateIngredients" class="btn btn-primary mt-4">
+          Adicionar Ingredientes
+        </button>
+      </div>
 
-    <!-- Botão para criar receita -->
-    <div class="form-control mt-6">
-      <button type="submit" class="btn btn-success">Criar Receita</button>
+      <!-- Ingredientes Dinâmicos -->
+      <div id="ingredientsContainer" class="space-y-4 mt-6">
+        <!-- Campos de ingredientes serão gerados aqui -->
+      </div>
+
+      <!-- Botão para criar receita -->
+      <div class="form-control mt-6">
+        <button type="submit" class="btn btn-success">Criar Receita</button>
+      </div>
+      {{--
+      <button class="btn mt-4 w-80" onclick="my_modal_1.showModal()">Adicionar ingrediente</button>
+      <dialog id="my_modal_1" class="modal">
+        <div class="modal-box">
+          <h1 class="text-lg font-bold">Preencha os dados abaixo</h1>
+          @!login.input({label: 'Nome'} )
+          <label class="form-control">
+            <div class="label">
+              <span class="label-text">Descrição</span>
+            </div>
+            <textarea class="textarea textarea-bordered h-24 w-96" placeholder="Bio"></textarea>
+          </label>
+          @!login.input({label: 'Unidade', method: 'post'} )
+          @!login.input({label: 'Preço', method: 'post'} )
+          @!login.input({label: 'URL', method: 'post'} )
+          @!login.input({label: 'Quantidade', method: 'post'} )
+          <div class="modal-action">
+            <form method="dialog">
+              <!-- if there is a button in form, it will close the modal -->
+              <button class="btn">Salvar</button>
+            </form>
+          </div>
+        </div>
+      </dialog>
+      @button( { label: 'Salvar', colorClass: 'btn-primary', extraClass: 'w-96 mt-4 mb-4' } )
+      @end --}}
     </div>
   </form>
 </div>
-
 <script>
   document.getElementById('generateIngredients').addEventListener('click', () => {
     const container = document.getElementById('ingredientsContainer');
@@ -90,15 +119,47 @@
       ingredientDiv.classList.add('form-control', 'border', 'p-4', 'rounded');
 
       ingredientDiv.innerHTML = `
-        <label class="label">
-          <span class="label-text">Ingrediente ${i}</span>
-        </label>
-        <input type="text" name="ingredients[${i}][name]" class="input input-bordered mb-2 w-full" placeholder="Nome do ingrediente" required />
-        <input type="text" name="ingredients[${i}][description]" class="input input-bordered mb-2 w-full" placeholder="Descrição" min="1" required />
-        <input type="text" name="ingredients[${i}][unit]" class="input input-bordered w-full" placeholder="Unidade " step="0.01" />
-        <input type="text" name="ingredients[${i}][image]" class="input input-bordered w-full" placeholder="Imagem " step="0.01" />
-        <input type="text" name="ingredients[${i}][price]" class="input input-bordered w-full" placeholder="Preço " step="0.01" />
-        <input type="text" name="ingredients[${i}][quantity]" class="input input-bordered mb-2 w-full" placeholder="Quantidade" min="1" required />
+      @!inputGeral({
+        label: 'Ingrediente ${i}', 
+        type: 'text', 
+        name: 'ingredients[${i}][name]', 
+        placeholder: 'Nome do ingrediente'
+      })
+
+       @!inputGeral({
+        label: 'Descrição ${i}', 
+        type: 'text', 
+        name: 'ingredients[${i}][description]', 
+        placeholder: 'Descrição'
+      })
+
+       @!inputGeral({
+        label: 'Unidade ${i}', 
+        type: 'text', 
+        name: 'ingredients[${i}][unit]', 
+        placeholder: 'kg, g'
+      })
+
+       @!inputGeral({
+        label: 'Preço ${i}', 
+        type: 'number', 
+        name: 'ingredients[${i}][price]', 
+        placeholder: 'Preço'
+      })
+
+      @!inputGeral({
+        label: 'Imagem ${i}', 
+        type: 'text', 
+        name: 'ingredients[${i}][image]', 
+        placeholder: 'URL'
+      })
+      
+       @!inputGeral({
+        label: 'Quantidade ${i}', 
+        type: 'number', 
+        name: 'ingredients[${i}][quantity]', 
+        placeholder: 'Quantidade'
+      })
       `;
 
       container.appendChild(ingredientDiv);

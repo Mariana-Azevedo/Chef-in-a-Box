@@ -1,33 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Lista de Receitas</title>
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
+
 <body class="bg-gray-100">
   <div class="container mx-auto py-8">
     <h1 class="text-3xl font-bold text-center mb-6">Lista de Receitas</h1>
-    
+
     <form method="GET" action="{{ route('recipes.index') }}" class="flex justify-center mb-8">
-      <input
-        type="text"
-        name="title"
-        placeholder="Buscar receita pelo título..."
-        class="input input-bordered w-1/3 mr-4"
-      />
+      <input type="text" name="title" placeholder="Buscar receita pelo título..."
+        class="input input-bordered w-1/3 mr-4" />
       <button type="submit" class="btn btn-primary">Buscar</button>
     </form>
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       @each(recipe in recipes)
       <div class="bg-white rounded-lg shadow-md overflow-hidden">
-        <img
-          src="{{ recipe.image }}"
-          alt="{{ recipe.title }}"
-          class="w-full h-48 object-cover"
-        />
+        <img src="{{ recipe.image }}" alt="{{ recipe.title }}" class="w-full h-48 object-cover" />
         <div class="p-4">
           <h2 class="text-xl font-bold mb-2">{{ recipe.title }}</h2>
           <p class="text-gray-700 text-sm mb-4">{{ recipe.instructions }}</p>
@@ -42,19 +36,13 @@
     <div class="mt-8">
       <nav class="flex justify-center space-x-4">
         @if(recipes.previousPage)
-        <a
-          href="?page={{ recipes.previousPage }}"
-          class="btn btn-outline btn-sm"
-        >
+        <a href="?page={{ recipes.previousPage }}" class="btn btn-outline btn-sm">
           Anterior
         </a>
         @endif
 
         @if(recipes.nextPage)
-        <a
-          href="?page={{ recipes.nextPage }}"
-          class="btn btn-outline btn-sm"
-        >
+        <a href="?page={{ recipes.nextPage }}" class="btn btn-outline btn-sm">
           Próximo
         </a>
         @endif
@@ -62,4 +50,5 @@
     </div>
   </div>
 </body>
+
 </html>

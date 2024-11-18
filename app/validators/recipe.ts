@@ -1,6 +1,5 @@
 import vine from '@vinejs/vine'
 
-
 /**
  * Validates the product's creation action
  */

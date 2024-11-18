@@ -5,7 +5,8 @@ const AuthController = () => import('#controllers/auth_controller')
 const UsersController = () => import('#controllers/users_controller')
 const RecipesController = () => import('#controllers/recipes_controller')
 
- router.on('/').render('pages/home/home').as('home.show').use(middleware.silent());
+
+router.on('/').render('pages/home/home').as('home.show').use(middleware.silent());//criar controller
 
 
 router.get('/login', [AuthController, 'create']).as('auth.create')

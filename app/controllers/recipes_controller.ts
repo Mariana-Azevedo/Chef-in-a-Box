@@ -31,7 +31,7 @@ export default class RecipesController{
       totalPrice: recipe.ingredients.reduce((acc, ingredient) => acc+ingredient.price*ingredient.$extras.pivot_quantity,0)
     }))
 
-    return view.render('pages/index', { recipes: recipesWithPrices })
+    return view.render('pages/home/showRecipes', { recipes: recipesWithPrices })
   }
 
   
@@ -85,13 +85,14 @@ export default class RecipesController{
   
 
   async store({ request, response }: HttpContext) {
+
     
     const payload = request.only(['title', 'instructions', 'cuisine', 'image', 'imageType'])
-
+    
     const data = await createRecipeValidator.validate(payload)
-
+   
     const ingredients = request.input('ingredients') // Array com os ingredientes e suas quantidades
-  
+   
     try {
       // Verifica se a receita já existe pelo título
       const existingRecipe = await Recipe.findBy('title', data.title)
@@ -123,7 +124,7 @@ export default class RecipesController{
       // Carrega os ingredientes associados e retorna a receita completa
       await recipe.load('ingredients')
     
-      return response.status(201).json(recipe)
+      return response.redirect().toRoute('recipes.index')
     } catch (error) {
       console.error(error)
       return response.status(500).json({ error: 'Erro ao criar a receita' })
