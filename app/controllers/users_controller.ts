@@ -38,10 +38,7 @@ export default class UsersController {
       // Salva as alterações
       await user.save();
 
-      return response.status(200).json({
-        message: 'Usuário atualizado com sucesso.',
-        data: user,
-      });
+      return response.redirect().toRoute('users.profile', {id: user.id})
     } catch (error) {
       console.error(error);
       return response.status(500).json({

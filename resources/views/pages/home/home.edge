@@ -1,8 +1,43 @@
 @layouts.app()
   @!navbar()
-  <h1 class="text-5xl font-bold m-6">Receitas</h1>
+  <div class="hero bg-base-200 min-h-screen flex items-center justify-between">
+    <div class="max-w-lg ps-8">
+      <h1 class="text-5xl font-bold">Chef in a box</h1>
+      <p class="py-6 text-xl">
+        Já imaginou preparar pratos deliciosos sem ter que planejar, medir ou correr atrás dos ingredientes certos? No Chef in a Box, você escolhe a receita que deseja e nós entregamos tudo na medida exata, pronto para você cozinhar sem complicação.
+      </p>
+      <button class="btn btn-primary">Receitas</button>
+    </div>
+    <img
+      src="https://cdn.sellerapp.com/img/website-v2/api-pages/walmart_product_api/optimize-your-inventory-process-with-walmart-product-api.svg"
+      class="h-auto max-h-screen ml-auto" />
+  </div>
   
+  <div class="hero bg-secondary min-h-screen">
+    <div class="hero-content text-center">
+      <div class="max-w-md">
+        <h1 class="text-5xl font-bold">Hello there</h1>
+        <p class="py-6">
+          Provident cupiditate voluptatem et in. Quaerat fugiat ut assumenda excepturi exercitationem
+          quasi. In deleniti eaque aut repudiandae et a id nisi.
+        </p>
+        <button class="btn btn-primary">Get Started</button>
+      </div>
+    </div>
+  </div>  
   <div class="grid grid-cols-4 ml-12">
     @!card() 
   </div>
+
+  <div class="hero bg-base-200 min-h-screen flex items-center justify-between">
+    <div class="max-w-lg ps-8">
+      <h1 class="text-5xl font-bold">Chef in a box</h1>
+      <p class="py-6 text-xl">
+        Já imaginou preparar pratos deliciosos sem ter que planejar, medir ou correr atrás dos ingredientes certos? No Chef in a Box, você escolhe a receita que deseja e nós entregamos tudo na medida exata, pronto para você cozinhar sem complicação.
+      </p>
+      <button class="btn btn-primary">Receitas</button>
+    </div>
+    
+  </div>
+  @!footer() 
 @end
