@@ -19,6 +19,13 @@
         <textarea name="instructions" class="textarea textarea-bordered h-24 w-96" placeholder="Bio"></textarea>
       </label>  --}}
       @!inputGeral({
+        label: 'Descrição', 
+        type: 'text', 
+        name: 'description', 
+        placeholder: 'Digite as descrição da receita'
+      } )
+
+      @!inputGeral({
         label: 'Instruções', 
         type: 'text', 
         name: 'instructions', 
@@ -39,12 +46,6 @@
         placeholder: 'URL'
       })
 
-      @!inputGeral({
-        label: 'Tipo de imagem', 
-        type: 'text', 
-        name: 'imageType', 
-        placeholder: 'jpg, '
-    })
 
       <!-- Open the modal using ID.showModal() method -->
 

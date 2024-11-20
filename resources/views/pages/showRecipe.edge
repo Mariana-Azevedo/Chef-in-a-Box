@@ -11,6 +11,12 @@
         <h1 class="text-7xl font-bold py-7">{{ recipe.title }}</h1>
         <p class="text-3xl"><strong>Preço Total:</strong> R$ {{ recipe.totalPrice.toFixed(2) }}</p>
 
+        <h2 class="mt-4 text-lg font-bold">Descrição:</h2>
+        <p>{{ recipe.description }}</p>
+
+        <h2 class="mt-4 text-lg font-bold">Culinária:</h2>
+        <p>{{ recipe.cuisine }}</p>
+
         <h2 class="mt-4 text-lg font-bold">Instruções:</h2>
         <p>{{ recipe.instructions }}</p>
 

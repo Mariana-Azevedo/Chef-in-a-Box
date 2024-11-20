@@ -13,6 +13,9 @@ export default class Recipe extends BaseModel {
     declare title: string
 
     @column()
+    declare description: string
+
+    @column()
     declare instructions: string
 
     @column()

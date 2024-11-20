@@ -35,13 +35,14 @@ router
 
 router
   .group(() => {
-    router.get('/new', [RecipesController, 'create']).as('recipes.create')
-    router.get('/', [RecipesController, 'index']).as('recipes.index')
-    router.get('/:id', [RecipesController, 'show']).as('recipes.show')
-    router.post('/', [RecipesController, 'store']).as('recipes.store')
+    router.get('/new', [RecipesController, 'create']).as('recipes.create').use(middleware.auth());
+    router.get('/', [RecipesController, 'index']).as('recipes.index').use(middleware.silent());
+    router.get('/:id', [RecipesController, 'show']).as('recipes.show').use(middleware.silent());
+    router.post('/', [RecipesController, 'store']).as('recipes.store').use(middleware.auth());
+    router.delete('/:id',[RecipesController, 'destroy']).as('recipes.destroy' ).use(middleware.auth());
   })
   .prefix('recipes')
-  .use(middleware.silent());
+  
 
 
   router.get('/home', ({view}) => {

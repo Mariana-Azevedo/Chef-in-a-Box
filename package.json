@@ -67,7 +67,8 @@
     "edge.js": "^6.2.0",
     "iconify": "^1.4.0",
     "luxon": "^3.5.0",
-    "reflect-metadata": "^0.2.2"
+    "reflect-metadata": "^0.2.2",
+    "uuid": "^11.0.3"
   },
   "hotHook": {
     "boundaries": [
