@@ -1,52 +1,118 @@
-@layouts.app()
-@!navbar()
-@login.loginCard(
-  
-)
-<h1>Bem vindo ao seu perfil {{returnUser.fullName}} !</h1>
-<p>Aqui você pode visualizar as informações do seu perfil e editá-las, se desejar.</p>
-<div class="overflow-x-auto">
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Nome</th>
-                <th>Email</th>
-                <th>Senha</th>
-                <th>Editar</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <th>
-                <div>
-                    {{returnUser.id}}
-                </div>
-                </th>
-                <td>
-                    <div class="flex items-center gap-3">
-                        {{returnUser.fullName}}
-                        <div>
-                </td>
-                <td>
-                    <div>
-                        {{returnUser.email}}
-                    </div>
-                </td>
-                <td>....</td>
-                <th>
-                    <button class="btn btn-ghost btn-xs">details</button>
-                </th>
-            </tr>
-            <tfoot>
-                <tr>
-                  <th></th>
-                  <th> <button class="btn btn-ghost btn-xs">Editar</button></th>
-                  <th><button class="btn btn-ghost btn-xs">Editar</button></th>
-                  <th><button class="btn btn-ghost btn-xs">Editar</button></th>
-                  <th></th>
-                </tr>
-              </tfoot>
-</div>
-@end
-@end
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Perfil do Usuário</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #f9f9f9;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    h1 {
+      color: #333;
+      margin-bottom: 20px;
+    }
+    p {
+      font-size: 16px;
+      color: #555;
+    }
+    .form-container {
+      margin-top: 20px;
+    }
+    label {
+      display: block;
+      font-weight: bold;
+      margin-top: 10px;
+    }
+    input {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      margin-bottom: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    button {
+      padding: 10px 20px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    @if(returnUser)
+      <h1>Perfil de {{ returnUser.fullName }}</h1>
+      <p><strong>E-mail:</strong> {{ returnUser.email }}</p>
+
+      <div class="form-container">
+        <h2>Editar Perfil</h2>
+        <form method="POST" action="/users/{{ returnUser.id }}">
+        <div>
+            <label for="fullName">Nome completo</label>
+            <input
+            type="text"
+            id="fullName"
+            name="fullName"
+            value="{{ returnUser.fullName }}"
+            required
+            />
+        </div>
+
+        <div>
+            <label for="email">E-mail</label>
+            <input
+            type="email"
+            id="email"
+            name="email"
+            value="{{ returnUser.email }}"
+            required
+            />
+        </div>
+
+        <div>
+            <label for="password">Senha</label>
+            <input
+            type="password"
+            id="password"
+            name="password"
+            placeholder="Digite sua nova senha (opcional)"
+            />
+        </div>
+
+        <div>
+            <label for="confirmPassword">Confirme a Senha</label>
+            <input
+            type="password"
+            id="password_confirmation"
+            name="password_confirmation"
+            placeholder="Confirme sua nova senha"
+            />
+        </div>
+
+        <button type="submit">Atualizar Perfil</button>
+        </form>
+      </div>
+    @else
+      <h1>Usuário não encontrado</h1>
+    @endif
+  </div>
+</body>
+</html>

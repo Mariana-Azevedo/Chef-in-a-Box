@@ -21,9 +21,10 @@ export default class UsersController {
     return response.redirect().toRoute('auth.create')
   }
 
-  public async patch({ request, response, params }: HttpContext) {
+  public async patch({ request, response, params, view }: HttpContext) {
     const userId = params.id;
 
+    console.log("a")
     try {
       // Busca o usuário ou lança erro se não encontrado
       const user = await User.findOrFail(userId);
@@ -33,15 +34,13 @@ export default class UsersController {
       const updatedData = await createUserValidator.validate(payload)
       user.merge(updatedData);
 
-      // Hash na senha, caso seja enviado
+      console.log(updatedData.fullName)
 
       // Salva as alterações
       await user.save();
 
-      return response.status(200).json({
-        message: 'Usuário atualizado com sucesso.',
-        data: user,
-      });
+      return response.redirect().toRoute('users.profile', {id: user.id})
+
     } catch (error) {
       console.error(error);
       return response.status(500).json({
