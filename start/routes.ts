@@ -13,6 +13,8 @@ router.get('/login', [AuthController, 'create']).as('auth.create')
 router.post('/login', [AuthController, 'store']).as('auth.store')
 router.get('/logout', [AuthController, 'destroy']).use(middleware.auth()).as('auth.destroy')
 
+//router.get('/cart',[RecipesController, 'create'])
+
 router.get('/test-protected', async ({ auth, response }) => {
   if (auth.isAuthenticated) {
     return response.json({ message: 'Rota protegida acessada com sucesso!', user: auth.user });
@@ -42,12 +44,19 @@ router
     router.delete('/:id',[RecipesController, 'destroy']).as('recipes.destroy' ).use(middleware.auth());
   })
   .prefix('recipes')
-  
+
+
 
 
   router.get('/home', ({view}) => {
     return view.render('pages/home.edge')
   })
+
+  
+  router.get('/cart', ({view}) => {
+    return view.render('pages/products/cart.edge')
+  })
+ 
   //router.get('/criarConta', [RecipesController, 'index']).as('criarConta.edge')
 
   router.get('/test', async () => {

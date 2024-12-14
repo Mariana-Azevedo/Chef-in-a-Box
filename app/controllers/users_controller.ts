@@ -11,15 +11,15 @@ export default class UsersController {
     return view.render('pages/criarConta')
   }
 
-  async store({request, response }: HttpContext) {
-    const payload = await request.all()
-    const data = await createUserValidator.validate(payload)
+   async store({request, response }: HttpContext) {
+     const payload = await request.all()
+     const data = await createUserValidator.validate(payload)
 
-    const user = new User()
-    user.merge(data)
-    await user.save()
-    return response.redirect().toRoute('auth.create')
-  }
+     const user = new User()
+     user.merge(data)
+     await user.save()
+     return response.redirect().toRoute('auth.create')
+   }
 
   public async patch({ request, response, params, view }: HttpContext) {
     const userId = params.id;
