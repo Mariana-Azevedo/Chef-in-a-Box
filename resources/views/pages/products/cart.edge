@@ -1,0 +1,60 @@
+@layouts.app()
+@!navbar()
+<div class="flex justify-center m-8">
+    <h1 class="text-5xl bold font-semibold">Seu carrinho</h1>
+</div>
+<div>
+    <p>Não está pronto para finalizar sua compra?<a class="font-semibold underline" href="{{ route('recipes.index') }}">Continue comprando</a></p>
+    <div class="flex flex-row">
+        <div class="overflow-x-auto">
+            <table class="table">
+                <!-- head -->
+                <thead>
+                    <tr>
+                        <th>Produto</th>
+                        <th>Ingredientes</th>
+                        <th>Preço</th>
+                        <th>Quantidade</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- row 1 -->
+                    <tr>
+                        <th>1</th>
+                        <td>Cy Ganderton</td>
+                        <td>Quality Control Specialist</td>
+                        <td>Blue</td>
+                    </tr>
+                    <!-- row 2 -->
+                    <tr>
+                        <th>2</th>
+                        <td>Hart Hagerty</td>
+                        <td>Desktop Support Technician</td>
+                        <td>Purple</td>
+                    </tr>
+                    <!-- row 3 -->
+                    <tr>
+                        <th>3</th>
+                        <td>Brice Swyre</td>
+                        <td>Tax Accountant</td>
+                        <td>Red</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div>
+            <div class="card bg-neutral text-neutral-content w-96">
+                <div class="card-body items-center text-center">
+                  <h2 class="card-title">Cookies!</h2>
+                  <p>We are using cookies for no reason.</p>
+                  <div class="card-actions justify-end">
+                    <button class="btn btn-primary">Accept</button>
+                    <button class="btn btn-ghost">Deny</button>
+                  </div>
+                </div>
+              </div>
+        </div>
+    </div>
+</div>
+@end

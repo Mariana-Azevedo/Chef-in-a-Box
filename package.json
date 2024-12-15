@@ -62,6 +62,7 @@
     "@adonisjs/shield": "^8.1.1",
     "@adonisjs/static": "^1.1.1",
     "@adonisjs/vite": "^3.0.0",
+    "@iconify/utils": "^2.2.0",
     "@vinejs/vine": "^2.1.0",
     "better-sqlite3": "^11.5.0",
     "edge.js": "^6.2.0",

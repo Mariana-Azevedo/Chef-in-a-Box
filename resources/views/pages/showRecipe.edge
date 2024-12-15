@@ -3,10 +3,9 @@
 <div class="flex">
   <div class="p-12">
     <div class="flex flex-row">
-      <div class="artboard artboard-horizontal phone-5">
-          <img src="{{ recipe.image }}" alt="{{ recipe.title }}" class="w-full h-auto object-cover rounded-lg" />
+      <div class="artboard artboard-horizontal phone-5 w-64 h-48">
+        <img src="{{ recipe.image }}" alt="{{ recipe.title }}" class="w-full h-full object-cover rounded-lg" />
       </div>
-
       <div class="flex flex-col ps-6">
         <h1 class="text-7xl font-bold py-7">{{ recipe.title }}</h1>
         <p class="text-3xl"><strong>Preço Total:</strong> R$ {{ recipe.totalPrice.toFixed(2) }}</p>
@@ -28,42 +27,32 @@
           </li>
           @endeach
         </ul>
-
-
-        <div class="card-actions justify-end mt-4">
-          <button class="btn btn-primary">Comprar</button>
-        </div>
-
+        <!-- You can open the modal using ID.showModal() method -->
+          <button class="btn btn-primary" onclick="my_modal_3.showModal()">Comprar</button>
+          <dialog id="my_modal_3" class="modal">
+            <div class="modal-box">
+              <form method="dialog">
+                <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+              </form>
+              <h3 class="text-lg font-bold">Já adicionamos ao seu carrinho!</h3>
+              <div class="divider"></div> 
+              <p class="text">{{ recipe.title }}</p>
+              <h2 class="mt-4 text-lg font-bold">Ingredientes:</h2>
+              <ul class="list-disc list-inside">
+                @each(ingredient in recipe.ingredients)
+                <li>
+                  {{ ingredient.name }} - R$ {{ ingredient.price.toFixed(2) }} (Quantidade: {{ ingredient.quantity }})
+                </li>
+                @endeach
+              </ul>
+              <p class="text"><strong>Preço Total:</strong> R$ {{ recipe.totalPrice.toFixed(2) }}</p>
+              <div class="divider"></div> 
+              @!button({ label: 'Continuar comprando', colorClass: 'btn-primary' }) 
+              @!button({ label: 'Ir para o carrinho', colorClass: 'btn' } ) 
+            </div>
+          </dialog>
       </div>
     </div>
   </div>
 </div>
-
-{{--  <div class="card lg:card-side bg-base-100 shadow-xl
-">
-  <figure class="w-full h-auto ">
-    <img src="{{ recipe.image }}" alt="{{ recipe.title }}" class="w-full h-64 object-cover rounded-lg" />
-  </figure>
-  <div class="card-body lg:w-1/2">
-    <h2 class="card-title">{{ recipe.title }}</h2>
-    <p><strong>Preço Total:</strong> R$ {{ recipe.totalPrice.toFixed(2) }}</p>
-
-    <h2 class="mt-4 text-lg font-bold">Ingredientes:</h2>
-    <ul class="list-disc list-inside">
-      @each(ingredient in recipe.ingredients)
-      <li>
-        {{ ingredient.name }} - R$ {{ ingredient.price.toFixed(2) }} (Quantidade: {{ ingredient.quantity }})
-      </li>
-      @endeach
-    </ul>
-
-    <h2 class="mt-4 text-lg font-bold">Instruções:</h2>
-    <p>{{ recipe.instructions }}</p>
-
-    <div class="card-actions justify-end mt-4">
-      <button class="btn btn-primary">Voltar</button>
-    </div>
-  </div>
-</div>  --}}
-
 @end
