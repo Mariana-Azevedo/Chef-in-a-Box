@@ -24,7 +24,7 @@
         <ul class="list-disc list-inside">
           @each(ingredient in recipe.ingredients)
           <li>
-            {{ ingredient.name }} - R$ {{ ingredient.price.toFixed(2) }} (Quantidade: {{ ingredient.quantity }})
+            {{ ingredient.name }} - R$ {{ ingredient.price.toFixed(2) }} (Quantidade: {{ ingredient.quantity }}{{ingredient.unit}})
           </li>
           @endeach
         </ul>

@@ -24,9 +24,6 @@ export default class Recipe extends BaseModel {
     @column()
     declare image: string
 
-    @column()
-    declare imageType: string
-
     @manyToMany(() => Ingredient, {
         pivotTable: 'recipe_ingredients', 
         pivotColumns: ['quantity'],

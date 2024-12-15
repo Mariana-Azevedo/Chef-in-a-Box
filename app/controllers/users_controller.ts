@@ -24,7 +24,6 @@ export default class UsersController {
   public async patch({ request, response, params, view }: HttpContext) {
     const userId = params.id;
 
-    console.log("a")
     try {
       // Busca o usuário ou lança erro se não encontrado
       const user = await User.findOrFail(userId);
