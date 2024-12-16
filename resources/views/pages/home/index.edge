@@ -3,11 +3,11 @@
 <div class="container mx-auto py-8">
     <h1 class="text-3xl font-bold text-center mb-6">Lista de Receitas</h1>
 
-    <form method="GET" action="{{ route('recipes.index') }}" class="flex justify-center mb-8">
+    {{--  <form method="GET" action="{{ route('recipes.index') }}" class="flex justify-center mb-8">
         <input type="text" name="title" placeholder="Buscar receita pelo título..."
             class="input input-bordered w-1/3 mr-4" />
         <button type="submit" class="btn btn-primary">Buscar</button>
-    </form>
+    </form>  --}}
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         @each(recipe in recipes)

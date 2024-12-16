@@ -11,15 +11,9 @@ export default class RecipesController{
     const page = request.input('page', 1)
     const limit = 10
 
-    const payload = request.only(['title'])
-
     const query = Recipe.query().preload('ingredients', (ingredientQuery) => {
       ingredientQuery.select('id', 'price').pivotColumns(['quantity']) // Inclua pivotColumns(['quantity'])
     })
-
-    if (payload.title && payload.title.length > 0) {
-      query.where('title', 'like', `%${payload.title}%`)
-    }
 
     const recipes = await query.paginate(page, limit)
     
@@ -74,6 +68,7 @@ export default class RecipesController{
         ingredients: recipe.ingredients.map((ingredient) => ({
           id: ingredient.id,
           name: ingredient.name,
+          unit: ingredient.unit,
           price: ingredient.price,
           quantity: ingredient.$extras.pivot_quantity,
           unit: ingredient.unit,
