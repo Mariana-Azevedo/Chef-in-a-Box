@@ -46,7 +46,7 @@ export default class RecipesController{
       const recipe = await Recipe.query()
         .where('id', recipeId)
         .preload('ingredients', (ingredientQuery) => {
-          ingredientQuery.select('id', 'name', 'price').pivotColumns(['quantity']);
+          ingredientQuery.select('id', 'name', 'price','unit').pivotColumns(['quantity']);
         })
         .first();
   
@@ -76,6 +76,7 @@ export default class RecipesController{
           name: ingredient.name,
           price: ingredient.price,
           quantity: ingredient.$extras.pivot_quantity,
+          unit: ingredient.unit,
         })),
       };
   
@@ -116,7 +117,7 @@ export default class RecipesController{
         // Busca ou cria o ingrediente
         const ingredientInstance = await Ingredient.firstOrCreate(
           { name: ingredientAuth.name },
-          { description: ingredientAuth.description, unit: ingredientAuth.unit, price: ingredientAuth.price }
+          { description: ingredientAuth.description, unit: ingredientAuth.unit, price: ingredientAuth.price, image: ingredientAuth.image }
         )
     
         // Armazena o ID e a quantidade para inserir na tabela de junção
