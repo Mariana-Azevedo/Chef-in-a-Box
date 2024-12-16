@@ -1,14 +1,14 @@
 @layouts.app()
 @!navbar()
-<div class="flex">
+<div class="flex justify-center">
   <div class="p-12">
-    <div class="flex flex-row">
-      <div class="artboard artboard-horizontal phone-5 w-64 h-48">
+    <div class="flex flex-col ">
+      <h1 class="text-7xl font-bold py-7">{{ recipe.title }}</h1>
+      <p class="mb-8 text-3xl">Preço Total:<strong class="font-extrabold text-secondary"> R$ <span id="recipe-totalPrice">{{ recipe.totalPrice.toFixed(2) }}</span></strong></p>
+      <div class="flex justify-center ">
         <img src="{{ recipe.image }}" alt="{{ recipe.title }}" class="w-full h-full object-cover rounded-lg" />
       </div>
       <div class="flex flex-col ps-6">
-        <h1 class="text-7xl font-bold py-7">{{ recipe.title }}</h1>
-        <p class="text-3xl"><strong>Preço Total:</strong> R$ {{ recipe.totalPrice.toFixed(2) }}</p>
 
         <h2 class="mt-4 text-lg font-bold">Descrição:</h2>
         <p>{{ recipe.description }}</p>
@@ -17,8 +17,91 @@
         <p>{{ recipe.cuisine }}</p>
 
         <h2 class="mt-4 text-lg font-bold">Instruções:</h2>
-        <p>{{ recipe.instructions }}</p>
+        <p class="mb-8">{{ recipe.instructions }}</p>
 
+        <div class="overflow-x-auto">
+          <table class="table">
+            <!-- head -->
+            <thead>
+              <tr>
+                <th>
+                </th>
+                <th>Ingredientes</th>
+                <th>Unidade</th>
+                <th>Preço</th>
+                <th>Quantidade</th>
+                <th>Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- row 1 -->
+              @each(ingredient in recipe.ingredients)
+              <tr>
+                <th>
+                  <label>
+                    <input type="checkbox" class="checkbox" />
+                  </label>
+                </th>
+                <td>
+                  <div class="flex items-center gap-3">
+                    <div class="avatar">
+                      <div class="mask mask-squircle h-12 w-12">
+                        <img src="{{ ingredient.image }}" alt="{{ ingredient.name }}" />
+                      </div>
+                    </div>
+                    <div>
+                      <div class="font-bold"> {{ ingredient.name }}</div>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  {{ ingredient.unit }}
+                </td>
+                <td id="price-{{ ingredient.id }}">R$ {{ ingredient.price.toFixed(2) }}</td>
+                <td>
+                  <div class="flex items-center space-x-2">
+                    <button
+                      class="btn btn-outline btn-error"
+                      onclick="updateQuantity('{{ ingredient.id }}', 'decrement', '{{ ingredient.price }}')"
+                    >-</button>
+                    <span id="quantity-{{ ingredient.id }}" class="font-bold text-lg">
+                      1
+                    </span>
+                    <button
+                      class="btn btn-outline btn-success"
+                      onclick="updateQuantity('{{ ingredient.id }}', 'increment', '{{ ingredient.price }}')"
+                    >+</button>
+                  </div>
+                </td>
+                <td>
+                  <span id="total-{{ ingredient.id }}">R$ {{ ingredient.price.toFixed(2) }}</span>
+                </td>
+              </tr>
+              @endeach
+            </tbody>
+            <tfoot>
+              <tr class="bg-base-200">
+                <th></th>
+                <th>Total</th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th id="totalPrice">R$ {{ recipe.totalPrice.toFixed(2) }}</th>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </div>
+    </div>
+    <button class="btn m-8 btn-primary" onclick="my_modal_3.showModal()">Adicionar ao carrinho</button>
+    <dialog id="my_modal_3" class="modal">
+      <div class="modal-box">
+        <form method="dialog">
+          <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+        </form>
+        <h3 class="text-lg font-bold">Já adicionamos ao seu carrinho!</h3>
+        <div class="divider"></div>
+        <p class="text">{{ recipe.title }}</p>
         <h2 class="mt-4 text-lg font-bold">Ingredientes:</h2>
         <ul class="list-disc list-inside">
           @each(ingredient in recipe.ingredients)
@@ -27,32 +110,54 @@
           </li>
           @endeach
         </ul>
-        <!-- You can open the modal using ID.showModal() method -->
-          <button class="btn btn-primary" onclick="my_modal_3.showModal()">Comprar</button>
-          <dialog id="my_modal_3" class="modal">
-            <div class="modal-box">
-              <form method="dialog">
-                <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
-              </form>
-              <h3 class="text-lg font-bold">Já adicionamos ao seu carrinho!</h3>
-              <div class="divider"></div> 
-              <p class="text">{{ recipe.title }}</p>
-              <h2 class="mt-4 text-lg font-bold">Ingredientes:</h2>
-              <ul class="list-disc list-inside">
-                @each(ingredient in recipe.ingredients)
-                <li>
-                  {{ ingredient.name }} - R$ {{ ingredient.price.toFixed(2) }} (Quantidade: {{ ingredient.quantity }})
-                </li>
-                @endeach
-              </ul>
-              <p class="text"><strong>Preço Total:</strong> R$ {{ recipe.totalPrice.toFixed(2) }}</p>
-              <div class="divider"></div> 
-              @!button({ label: 'Continuar comprando', colorClass: 'btn-primary' }) 
-              @!button({ label: 'Ir para o carrinho', colorClass: 'btn' } ) 
-            </div>
-          </dialog>
+        <p class="text"><strong>Preço Total:</strong> R$ {{ recipe.totalPrice.toFixed(2) }}</p>
+        <div class="divider"></div>
+        @!button({ label: 'Continuar comprando', colorClass: 'btn-primary' })
+        @!button({ label: 'Ir para o carrinho', colorClass: 'btn' } )
       </div>
-    </div>
+    </dialog>
   </div>
 </div>
+
+<script>
+  const quantities = {};
+
+  function updateQuantity(ingredientId, action, price) {
+    if (!quantities[ingredientId]) {
+      quantities[ingredientId] = 1;
+    }
+
+    // Atualiza a quantidade com base na ação
+    if (action === 'increment') {
+      quantities[ingredientId]++;
+    } else if (action === 'decrement' && quantities[ingredientId] > 1) {
+      quantities[ingredientId]--;
+    }
+
+    // Atualiza a quantidade no DOM
+    document.getElementById(`quantity-${ingredientId}`).textContent = quantities[ingredientId];
+
+    // Calcula o total do ingrediente
+    const total = quantities[ingredientId] * parseFloat(price);
+    document.getElementById(`total-${ingredientId}`).textContent = `R$ ${total.toFixed(2)}`;
+
+    // Atualiza o preço total geral
+    updateTotalPrice();
+  }
+
+  function updateTotalPrice() {
+    let totalPrice = 0;
+
+    // Calcula o preço total com base nos ingredientes
+    for (const ingredientId in quantities) {
+      const priceElement = document.getElementById(`price-${ingredientId}`);
+      const price = parseFloat(priceElement ? priceElement.textContent.replace('R$ ', '') : 0);
+      totalPrice += quantities[ingredientId] * price;
+    }
+
+    // Atualiza o total geral no DOM
+    document.getElementById('totalPrice').textContent = `R$ ${totalPrice.toFixed(2)}`;
+    document.getElementById('recipe-totalPrice').textContent = `R$ ${totalPrice.toFixed(2)}`;
+  }
+</script>
 @end
