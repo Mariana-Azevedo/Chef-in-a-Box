@@ -2,14 +2,18 @@
 @!navbar()
 <div class="flex justify-center">
   <div class="p-12">
-    <div class="flex flex-col ">
+    <div class="flex flex-col">
       <h1 class="text-7xl font-bold py-7">{{ recipe.title }}</h1>
-      <p class="mb-8 text-3xl">Preço Total:<strong class="font-extrabold text-secondary"> R$ <span id="recipe-totalPrice">{{ recipe.totalPrice.toFixed(2) }}</span></strong></p>
-      <div class="flex justify-center ">
+      <p class="mb-8 text-3xl">
+        Preço Total:
+        <strong class="font-extrabold text-secondary">
+          R$ <span id="recipe-totalPrice">{{ recipe.totalPrice.toFixed(2) }}</span>
+        </strong>
+      </p>
+      <div class="flex justify-center">
         <img src="{{ recipe.image }}" alt="{{ recipe.title }}" class="w-full h-full object-cover rounded-lg" />
       </div>
       <div class="flex flex-col ps-6">
-
         <h2 class="mt-4 text-lg font-bold">Descrição:</h2>
         <p>{{ recipe.description }}</p>
 
@@ -21,18 +25,17 @@
 
         <div class="overflow-x-auto">
           <table class="table">
-            <!-- head -->
+            <!-- Cabeçalho -->
             <thead>
-              <tr>      
+              <tr>
                 <th>Ingredientes</th>
-                <th>Unidade</th>
                 <th>Preço</th>
                 <th>Quantidade</th>
                 <th>Total</th>
               </tr>
             </thead>
             <tbody>
-              <!-- row 1 -->
+              <!-- Loop dos ingredientes -->
               @each(ingredient in recipe.ingredients)
               <tr>
                 <td>
@@ -43,44 +46,28 @@
                       </div>
                     </div>
                     <div>
-                      <div class="font-bold"> {{ ingredient.name }}</div>
+                      <div class="font-bold">{{ ingredient.name }}</div>
                     </div>
                   </div>
                 </td>
-                <td>
-                  {{ ingredient.unit }}
-                </td>
-                <td id="price-{{ ingredient.id }}">R$ {{ ingredient.price.toFixed(2) }}</td>
-                <td>
-                  <div class="flex items-center space-x-2">
-                    <span id="quantity-" class="text">1 {{ ingredient.unit }}</span>
-                  </div>
-                </td>
-                <td>
-                  <span id="total-{{ ingredient.id }}">R$ {{ ingredient.price.toFixed(2) }}</span>
-                </td>
+                <td class="price"  data-base-price="{{ ingredient.price }}">R$ {{ ingredient.price.toFixed(2) }}</td>
+                <td class="quantity-span"  data-base-quantity="{{ ingredient.quantity }}" 
+                data-unit="{{ ingredient.unit }}">{{ ingredient.quantity }} {{ ingredient.unit }}</td>
+                <td class="total">R$ {{ ingredient.price.toFixed(2) }}</td>
               </tr>
               @endeach
             </tbody>
+            <!-- Rodapé -->
             <tfoot>
               <tr class="bg-base-200">
                 <th>Total</th>
                 <th></th>
-                <th></th>
                 <th>
                   <div class="flex items-center space-x-2">
-                    <button
-                      class="btn btn-outline btn-error"
-                      onclick="updateTotalQuantity('decrement')"
-                    >-</button>
-                    <span id="quantity-" class="font-bold text-lg">
-                      1
-                    </span>
-                    <button
-                      class="btn btn-outline btn-success"
-                      onclick="updateTotalQuantity('increment')"
-                    >+</button>
-                  </div>                  
+                    <button class="btn btn-outline btn-error" onclick="updateTotalQuantity('decrement')">-</button>
+                    <span id="quantity-total" class="font-bold text-lg">1</span>
+                    <button class="btn btn-outline btn-success" onclick="updateTotalQuantity('increment')">+</button>
+                  </div>
                 </th>
                 <th id="totalPrice">R$ {{ recipe.totalPrice.toFixed(2) }}</th>
               </tr>
@@ -89,6 +76,7 @@
         </div>
       </div>
     </div>
+
     <button class="btn m-8 btn-primary" onclick="my_modal_3.showModal()">Adicionar ao carrinho</button>
     <dialog id="my_modal_3" class="modal">
       <div class="modal-box">
@@ -97,88 +85,44 @@
         </form>
         <h3 class="text-lg font-bold">Já adicionamos ao seu carrinho!</h3>
         <div class="divider"></div>
-        <p class="text-2xl font-bold  text-center m-4">{{ recipe.title }}</p>
-        <ul class="list-disc list-inside">
-        
-          <table class="table">
-            <!-- head -->
-            <thead>
-              <tr>      
-                <th>Ingredientes</th>
-                <th>Preço</th>
-                <th>Quantidade</th>
-                <th>Total</th>
-              </tr>
-            </thead>
-            <tbody>
-              <!-- row 1 -->
-              @each(ingredient in recipe.ingredients)
-              <tr>
-                <td>
-                  <div class="flex items-center gap-3">
-                    <div class="avatar">
-                      <div class="mask mask-squircle h-12 w-12">
-                        <img src="{{ ingredient.image }}" alt="{{ ingredient.name }}" />
-                      </div>
-                    </div>
-                    <div>
-                      <div class="font-bold"> {{ ingredient.name }}</div>
-                    </div>
-                  </div>
-                </td>
-                
-                <td id="price-{{ ingredient.id }}">R$ {{ ingredient.price.toFixed(2) }}</td>
-                <td>
-                  <div class="flex items-center space-x-2">
-                    <span id="quantity-" class="text">1 {{ ingredient.unit }}</span>
-                  </div>
-                </td>
-                <td>
-                  <span id="total-{{ ingredient.id }}">R$ {{ ingredient.price.toFixed(2) }}</span>
-                </td>
-              </tr>
-              @endeach
-            </tbody>
-            <tfoot>
-              <tr class="bg-base-200">
-                <th>Total</th>
-                
-                <th></th>
-                <th>
-                        
-                </th>
-                <th class="text-xl text-secondary" id="totalPrice">R$ {{ recipe.totalPrice.toFixed(2) }}</th>
-              </tr>
-            </tfoot>
-          </table>
-         
-        </ul>
-       
+        <p class="text-2xl font-bold text-center m-4">{{ recipe.title }}</p>
         <div class="divider"></div>
         @!button({ label: 'Continuar comprando', colorClass: 'btn-primary' })
-        @!button({ label: 'Ir para o carrinho', colorClass: 'btn' } )
+        @!button({ label: 'Ir para o carrinho', colorClass: 'btn' })
       </div>
     </dialog>
   </div>
 </div>
 
 <script>
- let totalQuantity = 1; // Quantidade total inicial
+  let totalQuantity = 1; // Quantidade total inicial
 
-function updateTotalQuantity(action) {
-  // Atualiza a quantidade total com base na ação
+  function updateTotalQuantity(action) {
+    console.log(`Ação recebida: ${action}`);
+
   if (action === 'increment') {
     totalQuantity++;
+    console.log(`Quantidade total incrementada para: ${totalQuantity}`);
   } else if (action === 'decrement' && totalQuantity > 1) {
     totalQuantity--;
+    console.log(`Quantidade total decrementada para: ${totalQuantity}`);
+  } else {
+    console.log('Ação de decrementar bloqueada: totalQuantity é 1 ou menor.');
   }
 
-  // Atualiza a quantidade total no DOM
-  document.getElementById('quantity-').textContent = totalQuantity;
+  // Atualiza no DOM
+  const quantityElement = document.getElementById('quantity-total');
+  if (quantityElement) {
+    quantityElement.textContent = totalQuantity;
+  } else {
+    console.error('Elemento quantity-total não encontrado no DOM.');
 
-  // Atualiza os preços e quantidades de todos os ingredientes
+  }
+
+  // Atualiza os ingredientes
   updateAllIngredients();
 }
+
 
 function updateAllIngredients() {
   let totalPrice = 0;
@@ -186,28 +130,33 @@ function updateAllIngredients() {
   // Itera por todos os ingredientes para recalcular os preços e quantidades
   const ingredients = document.querySelectorAll('tbody tr');
   ingredients.forEach((ingredientRow) => {
-    const priceElement = ingredientRow.querySelector('td:nth-child(3)');
-    const quantityElement = ingredientRow.querySelector('td:nth-child(4)');
-    const totalElement = ingredientRow.querySelector('td:nth-child(5)');
+    const priceElement = ingredientRow.querySelector('.price');
+    const quantityElement = ingredientRow.querySelector('.quantity-span');
+    const totalElement = ingredientRow.querySelector('.total');
 
     if (priceElement && quantityElement && totalElement) {
-      const unitPrice = parseFloat(priceElement.textContent.replace('R$ ', ''));
+      // Recupera os valores base dos atributos data-*
+      const baseQuantity = parseFloat(quantityElement.getAttribute('data-base-quantity'));
+      const unitPrice = parseFloat(priceElement.getAttribute('data-base-price'));
 
-      // Atualiza a quantidade do ingrediente
-      quantityElement.textContent = totalQuantity;
+      if (baseQuantity && unitPrice) {
+        // Calcula os novos valores com base no totalQuantity
+        const newQuantity = baseQuantity * totalQuantity;
+        const totalIngredientPrice = unitPrice * totalQuantity;
 
-      // Calcula o preço total do ingrediente
-      const totalIngredientPrice = unitPrice * totalQuantity;
+        // Atualiza a quantidade e o total do ingrediente
+        quantityElement.textContent = `${newQuantity} ${quantityElement.getAttribute('data-unit')}`;
+        totalElement.textContent = `R$ ${totalIngredientPrice.toFixed(2)}`;
 
-      // Atualiza o total do ingrediente
-      totalElement.textContent = `R$ ${totalIngredientPrice.toFixed(2)}`;
-      totalPrice += totalIngredientPrice;
+        // Soma ao preço total geral
+        totalPrice += totalIngredientPrice;
+      }
     }
   });
 
   // Atualiza o preço total geral
   document.getElementById('totalPrice').textContent = `R$ ${totalPrice.toFixed(2)}`;
-  document.getElementById('recipe-totalPrice').textContent = `R$ ${totalPrice.toFixed(2)}`;
+  document.getElementById('recipe-totalPrice').textContent = `${totalPrice.toFixed(2)}`;
 }
 
 </script>
