@@ -2,14 +2,18 @@
 @!navbar()
 <div class="flex justify-center">
   <div class="p-12">
-    <div class="flex flex-col ">
+    <div class="flex flex-col">
       <h1 class="text-7xl font-bold py-7">{{ recipe.title }}</h1>
-      <p class="mb-8 text-3xl">Preço Total:<strong class="font-extrabold text-secondary"> R$ <span id="recipe-totalPrice">{{ recipe.totalPrice.toFixed(2) }}</span></strong></p>
-      <div class="flex justify-center ">
+      <p class="mb-8 text-3xl">
+        Preço Total:
+        <strong class="font-extrabold text-secondary">
+          R$ <span id="recipe-totalPrice">{{ recipe.totalPrice.toFixed(2) }}</span>
+        </strong>
+      </p>
+      <div class="flex justify-center">
         <img src="{{ recipe.image }}" alt="{{ recipe.title }}" class="w-full h-full object-cover rounded-lg" />
       </div>
       <div class="flex flex-col ps-6">
-
         <h2 class="mt-4 text-lg font-bold">Descrição:</h2>
         <p>{{ recipe.description }}</p>
 
@@ -21,27 +25,19 @@
 
         <div class="overflow-x-auto">
           <table class="table">
-            <!-- head -->
+            <!-- Cabeçalho -->
             <thead>
               <tr>
-                <th>
-                </th>
                 <th>Ingredientes</th>
-                <th>Unidade</th>
                 <th>Preço</th>
                 <th>Quantidade</th>
                 <th>Total</th>
               </tr>
             </thead>
             <tbody>
-              <!-- row 1 -->
+              <!-- Loop dos ingredientes -->
               @each(ingredient in recipe.ingredients)
               <tr>
-                <th>
-                  <label>
-                    <input type="checkbox" class="checkbox" />
-                  </label>
-                </th>
                 <td>
                   <div class="flex items-center gap-3">
                     <div class="avatar">
@@ -50,42 +46,29 @@
                       </div>
                     </div>
                     <div>
-                      <div class="font-bold"> {{ ingredient.name }}</div>
+                      <div class="font-bold">{{ ingredient.name }}</div>
                     </div>
                   </div>
                 </td>
-                <td>
-                  {{ ingredient.unit }}
-                </td>
-                <td id="price-{{ ingredient.id }}">R$ {{ ingredient.price.toFixed(2) }}</td>
-                <td>
-                  <div class="flex items-center space-x-2">
-                    <button
-                      class="btn btn-outline btn-error"
-                      onclick="updateQuantity('{{ ingredient.id }}', 'decrement', '{{ ingredient.price }}')"
-                    >-</button>
-                    <span id="quantity-{{ ingredient.id }}" class="font-bold text-lg">
-                      1
-                    </span>
-                    <button
-                      class="btn btn-outline btn-success"
-                      onclick="updateQuantity('{{ ingredient.id }}', 'increment', '{{ ingredient.price }}')"
-                    >+</button>
-                  </div>
-                </td>
-                <td>
-                  <span id="total-{{ ingredient.id }}">R$ {{ ingredient.price.toFixed(2) }}</span>
-                </td>
+                <td class="price"  data-base-price="{{ ingredient.price }}">R$ {{ ingredient.price.toFixed(2) }}</td>
+                <td class="quantity-span"  data-base-quantity="{{ ingredient.quantity }}" 
+                data-unit="{{ ingredient.unit }}">{{ ingredient.quantity }} {{ ingredient.unit }}</td>
+                <td class="total">R$ {{ ingredient.price.toFixed(2) }}</td>
               </tr>
               @endeach
             </tbody>
+            <!-- Rodapé -->
             <tfoot>
               <tr class="bg-base-200">
-                <th></th>
                 <th>Total</th>
                 <th></th>
-                <th></th>
-                <th></th>
+                <th>
+                  <div class="flex items-center space-x-2">
+                    <button class="btn btn-outline btn-error" onclick="updateTotalQuantity('decrement')">-</button>
+                    <span id="quantity-total" class="font-bold text-lg">1</span>
+                    <button class="btn btn-outline btn-success" onclick="updateTotalQuantity('increment')">+</button>
+                  </div>
+                </th>
                 <th id="totalPrice">R$ {{ recipe.totalPrice.toFixed(2) }}</th>
               </tr>
             </tfoot>
@@ -93,6 +76,7 @@
         </div>
       </div>
     </div>
+
     <button class="btn m-8 btn-primary" onclick="my_modal_3.showModal()">Adicionar ao carrinho</button>
     <dialog id="my_modal_3" class="modal">
       <div class="modal-box">
@@ -101,63 +85,85 @@
         </form>
         <h3 class="text-lg font-bold">Já adicionamos ao seu carrinho!</h3>
         <div class="divider"></div>
-        <p class="text">{{ recipe.title }}</p>
-        <h2 class="mt-4 text-lg font-bold">Ingredientes:</h2>
-        <ul class="list-disc list-inside">
-          @each(ingredient in recipe.ingredients)
-          <li>
-            {{ ingredient.name }} - R$ {{ ingredient.price.toFixed(2) }} (Quantidade: {{ ingredient.quantity }}{{ingredient.unit}})
-          </li>
-          @endeach
-        </ul>
-        <p class="text"><strong>Preço Total:</strong> R$ {{ recipe.totalPrice.toFixed(2) }}</p>
+        <p class="text-2xl font-bold text-center m-4">{{ recipe.title }}</p>
         <div class="divider"></div>
-        @!button({ label: 'Continuar comprando', colorClass: 'btn-primary' })
-        @!button({ label: 'Ir para o carrinho', colorClass: 'btn' } )
+        <div class="">
+          <a class="btn max-w-48 btn-outline btn-secondary" href="{{ route('recipes.index') }}">
+          Continuar comprando
+          </a>
+         <a class="btn max-w-48 btn-secondary" href="{{ route('cart.index') }}" >
+          Ir para o carrinho
+          </a>
+        </div>
       </div>
     </dialog>
   </div>
 </div>
 
 <script>
-  const quantities = {};
+  let totalQuantity = 1; // Quantidade total inicial
 
-  function updateQuantity(ingredientId, action, price) {
-    if (!quantities[ingredientId]) {
-      quantities[ingredientId] = 1;
-    }
+  function updateTotalQuantity(action) {
+    console.log(`Ação recebida: ${action}`);
 
-    // Atualiza a quantidade com base na ação
-    if (action === 'increment') {
-      quantities[ingredientId]++;
-    } else if (action === 'decrement' && quantities[ingredientId] > 1) {
-      quantities[ingredientId]--;
-    }
-
-    // Atualiza a quantidade no DOM
-    document.getElementById(`quantity-${ingredientId}`).textContent = quantities[ingredientId];
-
-    // Calcula o total do ingrediente
-    const total = quantities[ingredientId] * parseFloat(price);
-    document.getElementById(`total-${ingredientId}`).textContent = `R$ ${total.toFixed(2)}`;
-
-    // Atualiza o preço total geral
-    updateTotalPrice();
+  if (action === 'increment') {
+    totalQuantity++;
+    console.log(`Quantidade total incrementada para: ${totalQuantity}`);
+  } else if (action === 'decrement' && totalQuantity > 1) {
+    totalQuantity--;
+    console.log(`Quantidade total decrementada para: ${totalQuantity}`);
+  } else {
+    console.log('Ação de decrementar bloqueada: totalQuantity é 1 ou menor.');
   }
 
-  function updateTotalPrice() {
-    let totalPrice = 0;
+  // Atualiza no DOM
+  const quantityElement = document.getElementById('quantity-total');
+  if (quantityElement) {
+    quantityElement.textContent = totalQuantity;
+  } else {
+    console.error('Elemento quantity-total não encontrado no DOM.');
 
-    // Calcula o preço total com base nos ingredientes
-    for (const ingredientId in quantities) {
-      const priceElement = document.getElementById(`price-${ingredientId}`);
-      const price = parseFloat(priceElement ? priceElement.textContent.replace('R$ ', '') : 0);
-      totalPrice += quantities[ingredientId] * price;
-    }
-
-    // Atualiza o total geral no DOM
-    document.getElementById('totalPrice').textContent = `R$ ${totalPrice.toFixed(2)}`;
-    document.getElementById('recipe-totalPrice').textContent = `R$ ${totalPrice.toFixed(2)}`;
   }
+
+  // Atualiza os ingredientes
+  updateAllIngredients();
+}
+
+
+function updateAllIngredients() {
+  let totalPrice = 0;
+
+  // Itera por todos os ingredientes para recalcular os preços e quantidades
+  const ingredients = document.querySelectorAll('tbody tr');
+  ingredients.forEach((ingredientRow) => {
+    const priceElement = ingredientRow.querySelector('.price');
+    const quantityElement = ingredientRow.querySelector('.quantity-span');
+    const totalElement = ingredientRow.querySelector('.total');
+
+    if (priceElement && quantityElement && totalElement) {
+      // Recupera os valores base dos atributos data-*
+      const baseQuantity = parseFloat(quantityElement.getAttribute('data-base-quantity'));
+      const unitPrice = parseFloat(priceElement.getAttribute('data-base-price'));
+
+      if (baseQuantity && unitPrice) {
+        // Calcula os novos valores com base no totalQuantity
+        const newQuantity = baseQuantity * totalQuantity;
+        const totalIngredientPrice = unitPrice * totalQuantity;
+
+        // Atualiza a quantidade e o total do ingrediente
+        quantityElement.textContent = `${newQuantity} ${quantityElement.getAttribute('data-unit')}`;
+        totalElement.textContent = `R$ ${totalIngredientPrice.toFixed(2)}`;
+
+        // Soma ao preço total geral
+        totalPrice += totalIngredientPrice;
+      }
+    }
+  });
+
+  // Atualiza o preço total geral
+  document.getElementById('totalPrice').textContent = `R$ ${totalPrice.toFixed(2)}`;
+  document.getElementById('recipe-totalPrice').textContent = `${totalPrice.toFixed(2)}`;
+}
+
 </script>
 @end

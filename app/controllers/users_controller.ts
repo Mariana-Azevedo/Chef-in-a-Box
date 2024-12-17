@@ -21,7 +21,7 @@ export default class UsersController {
      return response.redirect().toRoute('auth.create')
    }
 
-  public async patch({ request, response, params, view }: HttpContext) {
+  public async patch({ request, response, params }: HttpContext) {
     const userId = params.id;
 
     try {

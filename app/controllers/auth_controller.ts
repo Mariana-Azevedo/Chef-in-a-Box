@@ -13,6 +13,8 @@ export default class AuthController {
 
             const user = await User.verifyCredentials(payload.email, payload.password)
             await auth.use('web').login(user)
+            session.flash({ success: 'Login realizado com sucesso!' })
+
 
         } catch (exception) {
             session.flashOnly(['email'])  
