@@ -71,7 +71,6 @@ export default class RecipesController{
           unit: ingredient.unit,
           price: ingredient.price,
           quantity: ingredient.$extras.pivot_quantity,
-          unit: ingredient.unit,
         })),
       };
   

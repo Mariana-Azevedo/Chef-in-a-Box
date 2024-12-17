@@ -25,9 +25,6 @@
         </label>
         @!login.senha()
       </div>
-      <label class="label">
-        <a href="#" class="label-text-alt link link-hover">Esqueceu sua senha?</a>
-      </label>
       <div class="form-control mt-6">
         {{-- <button class="btn btn-primary">Login</button> --}}
         @!button({ label: 'Login', colorClass: 'btn-primary' })
@@ -37,6 +34,9 @@
     </form>
   </div>
 </div>
+@if(auth.isAuthenticated)
+@!login.toast({label: 'Logado com sucesso'})
+@end
 </div>
 @end
 @end
