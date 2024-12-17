@@ -14,7 +14,7 @@ router.get('/login', [AuthController, 'create']).as('auth.create')
 router.post('/login', [AuthController, 'store']).as('auth.store')
 router.get('/logout', [AuthController, 'destroy']).use(middleware.auth()).as('auth.destroy')
 
- router.get('/cart',[CartsController, 'index']).as('cart.index').use(middleware.auth());
+router.get('/cart',[CartsController, 'index']).as('cart.index').use(middleware.auth());
 
 router.get('/test-protected', async ({ auth, response }) => {
   if (auth.isAuthenticated) {

@@ -87,8 +87,14 @@
         <div class="divider"></div>
         <p class="text-2xl font-bold text-center m-4">{{ recipe.title }}</p>
         <div class="divider"></div>
-        @!button({ label: 'Continuar comprando', colorClass: 'btn-primary' })
-        @!button({ label: 'Ir para o carrinho', colorClass: 'btn' })
+        <div class="">
+          <a class="btn max-w-48 btn-outline btn-secondary" href="{{ route('recipes.index') }}">
+          Continuar comprando
+          </a>
+         <a class="btn max-w-48 btn-secondary" href="{{ route('cart.index') }}" >
+          Ir para o carrinho
+          </a>
+        </div>
       </div>
     </dialog>
   </div>
