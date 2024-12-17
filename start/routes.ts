@@ -4,6 +4,7 @@ import { middleware } from './kernel.js'
 const AuthController = () => import('#controllers/auth_controller')
 const UsersController = () => import('#controllers/users_controller')
 const RecipesController = () => import('#controllers/recipes_controller')
+const CartsController = () => import('#controllers/carts_controller')
 
 
 router.on('/').render('pages/home/home').as('home.show').use(middleware.silent());//criar controller
@@ -13,7 +14,7 @@ router.get('/login', [AuthController, 'create']).as('auth.create')
 router.post('/login', [AuthController, 'store']).as('auth.store')
 router.get('/logout', [AuthController, 'destroy']).use(middleware.auth()).as('auth.destroy')
 
-//router.get('/cart',[RecipesController, 'create'])
+ router.get('/cart',[CartsController, 'index']).as('cart.index').use(middleware.auth());
 
 router.get('/test-protected', async ({ auth, response }) => {
   if (auth.isAuthenticated) {
@@ -53,9 +54,9 @@ router
   })
 
   
-  router.get('/cart', ({view}) => {
-    return view.render('pages/products/cart.edge')
-  })
+  // router.get('/cart', ({view}) => {
+  //   return view.render('pages/products/cart.edge')
+  // })
  
   //router.get('/criarConta', [RecipesController, 'index']).as('criarConta.edge')
 
