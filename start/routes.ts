@@ -10,6 +10,7 @@ const CartsController = () => import('#controllers/carts_controller')
 router.on('/').render('pages/home/home').as('home.show').use(middleware.silent());//criar controller
 
 
+
 router.get('/login', [AuthController, 'create']).as('auth.create')
 router.post('/login', [AuthController, 'store']).as('auth.store')
 router.get('/logout', [AuthController, 'destroy']).use(middleware.auth()).as('auth.destroy')
