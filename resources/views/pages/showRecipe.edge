@@ -35,7 +35,6 @@
               </tr>
             </thead>
             <tbody>
-              <!-- Loop dos ingredientes -->
               @each(ingredient in recipe.ingredients)
               <tr>
                 <td>
@@ -50,14 +49,17 @@
                     </div>
                   </div>
                 </td>
-                <td class="price"  data-base-price="{{ ingredient.price }}">R$ {{ ingredient.price.toFixed(2) }}</td>
-                <td class="quantity-span"  data-base-quantity="{{ ingredient.quantity }}" 
-                data-unit="{{ ingredient.unit }}">{{ ingredient.quantity }} {{ ingredient.unit }}</td>
+                <td class="price" data-base-price="{{ ingredient.price }}">R$ {{ ingredient.price.toFixed(2) }}</td>
+                <td class="quantity-span" 
+                    data-id="{{ ingredient.id }}" 
+                    data-base-quantity="{{ ingredient.quantity }}" 
+                    data-unit="{{ ingredient.unit }}">
+                  {{ ingredient.quantity }} {{ ingredient.unit }}
+                </td>
                 <td class="total">R$ {{ ingredient.price.toFixed(2) }}</td>
               </tr>
               @endeach
             </tbody>
-            <!-- Rodapé -->
             <tfoot>
               <tr class="bg-base-200">
                 <th>Total</th>
@@ -77,7 +79,7 @@
       </div>
     </div>
 
-    <button class="btn m-8 btn-primary" onclick="my_modal_3.showModal()">Adicionar ao carrinho</button>
+    <button class="btn m-8 btn-primary" onclick="addToCart()">Adicionar ao carrinho</button>
     <dialog id="my_modal_3" class="modal">
       <div class="modal-box">
         <form method="dialog">
@@ -89,10 +91,10 @@
         <div class="divider"></div>
         <div class="">
           <a class="btn max-w-48 btn-outline btn-secondary" href="{{ route('recipes.index') }}">
-          Continuar comprando
+            Continuar comprando
           </a>
-         <a class="btn max-w-48 btn-secondary" href="{{ route('cart.index') }}" >
-          Ir para o carrinho
+          <a class="btn max-w-48 btn-secondary" href="{{ route('cart.index') }}">
+            Ir para o carrinho
           </a>
         </div>
       </div>
@@ -101,69 +103,75 @@
 </div>
 
 <script>
-  let totalQuantity = 1; // Quantidade total inicial
+  let totalQuantity = 1;
 
   function updateTotalQuantity(action) {
-    console.log(`Ação recebida: ${action}`);
+    if (action === 'increment') {
+      totalQuantity++;
+    } else if (action === 'decrement' && totalQuantity > 1) {
+      totalQuantity--;
+    }
 
-  if (action === 'increment') {
-    totalQuantity++;
-    console.log(`Quantidade total incrementada para: ${totalQuantity}`);
-  } else if (action === 'decrement' && totalQuantity > 1) {
-    totalQuantity--;
-    console.log(`Quantidade total decrementada para: ${totalQuantity}`);
-  } else {
-    console.log('Ação de decrementar bloqueada: totalQuantity é 1 ou menor.');
+    document.getElementById('quantity-total').textContent = totalQuantity;
+    updateAllIngredients();
   }
 
-  // Atualiza no DOM
-  const quantityElement = document.getElementById('quantity-total');
-  if (quantityElement) {
-    quantityElement.textContent = totalQuantity;
-  } else {
-    console.error('Elemento quantity-total não encontrado no DOM.');
+  function updateAllIngredients() {
+    let totalPrice = 0;
 
-  }
+    const ingredients = document.querySelectorAll('tbody tr');
+    ingredients.forEach((ingredientRow) => {
+      const priceElement = ingredientRow.querySelector('.price');
+      const quantityElement = ingredientRow.querySelector('.quantity-span');
+      const totalElement = ingredientRow.querySelector('.total');
 
-  // Atualiza os ingredientes
-  updateAllIngredients();
-}
-
-
-function updateAllIngredients() {
-  let totalPrice = 0;
-
-  // Itera por todos os ingredientes para recalcular os preços e quantidades
-  const ingredients = document.querySelectorAll('tbody tr');
-  ingredients.forEach((ingredientRow) => {
-    const priceElement = ingredientRow.querySelector('.price');
-    const quantityElement = ingredientRow.querySelector('.quantity-span');
-    const totalElement = ingredientRow.querySelector('.total');
-
-    if (priceElement && quantityElement && totalElement) {
-      // Recupera os valores base dos atributos data-*
       const baseQuantity = parseFloat(quantityElement.getAttribute('data-base-quantity'));
       const unitPrice = parseFloat(priceElement.getAttribute('data-base-price'));
 
-      if (baseQuantity && unitPrice) {
-        // Calcula os novos valores com base no totalQuantity
-        const newQuantity = baseQuantity * totalQuantity;
-        const totalIngredientPrice = unitPrice * totalQuantity;
+      const newQuantity = baseQuantity * totalQuantity;
+      const totalIngredientPrice = unitPrice * totalQuantity;
 
-        // Atualiza a quantidade e o total do ingrediente
-        quantityElement.textContent = `${newQuantity} ${quantityElement.getAttribute('data-unit')}`;
-        totalElement.textContent = `R$ ${totalIngredientPrice.toFixed(2)}`;
+      quantityElement.textContent = `${newQuantity} ${quantityElement.getAttribute('data-unit')}`;
+      totalElement.textContent = `R$ ${totalIngredientPrice.toFixed(2)}`;
 
-        // Soma ao preço total geral
-        totalPrice += totalIngredientPrice;
+      totalPrice += totalIngredientPrice;
+    });
+
+    document.getElementById('totalPrice').textContent = `R$ ${totalPrice.toFixed(2)}`;
+    document.getElementById('recipe-totalPrice').textContent = totalPrice.toFixed(2);
+  }
+
+  async function addToCart(userId) {
+    const ingredients = [];
+
+
+    document.querySelectorAll('.quantity-span').forEach((element) => {
+      const id = parseInt(element.getAttribute('data-id'));
+      console.log(id)
+      const baseQuantity = parseFloat(element.getAttribute('data-base-quantity'));
+      const quantity = baseQuantity * totalQuantity;
+
+      ingredients.push({ id, quantity });
+    });
+
+    try {
+      const response = await fetch(`/cart/store`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ ingredients }),
+      });
+
+      if (response.ok) {
+        console.log('Itens adicionados ao carrinho com sucesso!');
+        my_modal_3.showModal();
+      } else {
+        console.error('Erro ao adicionar itens ao carrinho');
       }
+    } catch (error) {
+      console.error('Erro ao enviar requisição:', error);
     }
-  });
-
-  // Atualiza o preço total geral
-  document.getElementById('totalPrice').textContent = `R$ ${totalPrice.toFixed(2)}`;
-  document.getElementById('recipe-totalPrice').textContent = `${totalPrice.toFixed(2)}`;
-}
-
+  }
 </script>
 @end

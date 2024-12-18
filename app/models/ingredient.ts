@@ -2,6 +2,7 @@ import { DateTime } from 'luxon'
 import { BaseModel, column, manyToMany } from '@adonisjs/lucid/orm'
 import type { ManyToMany } from '@adonisjs/lucid/types/relations'
 import Recipe from './recipe.js'
+import Cart from './cart.js'
 
 export default class Ingredient extends BaseModel {
 
@@ -31,6 +32,12 @@ export default class Ingredient extends BaseModel {
         pivotColumns: ['quantity'],
     })
     declare recipes: ManyToMany<typeof Recipe>
+
+    @manyToMany(() => Cart, {
+        pivotTable: 'carts_ingredients', 
+        pivotColumns: ['quantity'],
+    })
+    declare carts: ManyToMany<typeof Cart>
 
     @column.dateTime({ autoCreate: true })
     declare createdAt: DateTime

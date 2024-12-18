@@ -1,9 +1,11 @@
 import { DateTime } from 'luxon'
 import hash from '@adonisjs/core/services/hash'
 import { compose } from '@adonisjs/core/helpers'
-import { BaseModel, beforeCreate, column } from '@adonisjs/lucid/orm'
+import { BaseModel, beforeCreate, column, hasOne } from '@adonisjs/lucid/orm'
+import type { HasOne } from '@adonisjs/lucid/types/relations'
 import { withAuthFinder } from '@adonisjs/auth/mixins/lucid'
 import { v4 as uuidv4 } from 'uuid'
+import Cart from './cart.js'
 
 const AuthFinder = withAuthFinder(() => hash.use('scrypt'), {
   uids: ['email'],
@@ -23,6 +25,11 @@ export default class User extends compose(BaseModel, AuthFinder) {
   @column({ serializeAs: null })
   declare password: string
 
+  @hasOne(() => Cart, {
+    foreignKey: 'userId', // Corrigido para a chave correta
+  })
+  declare cart: HasOne<typeof Cart>
+
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime
 
@@ -34,5 +41,3 @@ export default class User extends compose(BaseModel, AuthFinder) {
     user.id = uuidv4() 
   }
 }
-
-

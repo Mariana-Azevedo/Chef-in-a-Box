@@ -61,6 +61,7 @@
     "@adonisjs/session": "^7.5.0",
     "@adonisjs/shield": "^8.1.1",
     "@adonisjs/static": "^1.1.1",
+    "@adonisjs/validator": "^13.0.2",
     "@adonisjs/vite": "^3.0.0",
     "@iconify/utils": "^2.2.0",
     "@vinejs/vine": "^2.1.0",
