@@ -12,9 +12,9 @@ export default class Cart extends BaseModel {
         pivotColumns: ['quantity'],
     })
     declare ingredients: ManyToMany<typeof Ingredient>
-
+    
     @column()
-    declare userId: number
+    declare userId: string
 
     @column.dateTime({ autoCreate: true })
     declare createdAt: DateTime

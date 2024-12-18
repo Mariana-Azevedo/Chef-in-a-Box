@@ -1,66 +1,76 @@
-import User from "#models/user"
+import Ingredient from "#models/ingredient"
 import { HttpContext } from "@adonisjs/core/http"
 
 export default class CartsController {
+  public async index({ request,view }: HttpContext) {
+  
+    const cart = JSON.parse(request.cookie('cart', JSON.stringify([]))) as Array<{ id: number; quantity: number }> 
 
-  public async index({ params, view }: HttpContext) {
-    const userId = params.id
+    console.log(cart)
+    const ingredients = await Ingredient.query()
+    .whereIn(
+      'id',
+      cart.map((item) => item.id)
+    )
+    .exec()
 
-    const user = await User.query()
-      .where('id', userId)
-      .preload('cart', (cartQuery) => {
-      // Preload do relacionamento many-to-many dentro do carrinho
-        cartQuery.preload('ingredients', (ingredientQuery) => {
-        // Seleciona as colunas específicas da tabela de itens
-        ingredientQuery.select('id', 'name', 'price', 'description')
-          // Carrega colunas adicionais da tabela pivot
-          .pivotColumns(['quantity'])
-      })
-    })
-    .firstOrFail()
-    // Obtém o carrinho do usuário
-    const cart = user.cart
-
-    // Renderiza a view com os dados do carrinho
-    return view.render('pages/products/cart.edge', { cart })
+    console.log(ingredients)
+    console.log("vai")
+    return view.render('pages/products/cart.edge', { ingredients })
   }
-      
-  public async store({ params, request, response }: HttpContext) {
-    const userId = params.id;
 
-    // Obter os dados da requisição (ingredient_id e quantity)
-    const { ingredient_id, quantity } = request.only(['ingredient_id', 'quantity']);
+  public async store({ request, response }: HttpContext) {
+    const { ingredients } = request.only(['ingredients']) as { ingredients: Array<{ id: number; quantity: number }> }
 
-    try {
-      // Buscar o usuário pelo ID e carregar o relacionamento do carrinho
-      const user = await User.query()
-        .where('id', userId)
-        .preload('cart', (cartQuery) => {
-          cartQuery.preload('ingredients');
-        })
-        .firstOrFail();
-
-      // Verificar se o usuário possui um carrinho
-      let cart = user.cart;
-      if (!cart) {
-        return response.status(400).send({ message: 'O usuário não possui um carrinho.' });
-      }
-
-      // Adicionar ou atualizar o ingrediente com a quantidade no relacionamento many-to-many
-      await cart.related('ingredients').attach({
-        [ingredient_id]: { quantity },
-      });
-
-      return response.status(200).send({
-        message: 'Ingrediente adicionado ao carrinho com sucesso!',
-        data: { ingredient_id, quantity },
-      });
-    } catch (error) {
-      console.error(error);
-      return response.status(500).send({
-        message: 'Erro ao adicionar ingrediente ao carrinho.',
-      });
+    if (!Array.isArray(ingredients)) {
+      console.error('[STORE] Dados inválidos: ingredientes não são um array.')
+      return response.status(400).json({ error: 'Os ingredientes devem ser um array' })
     }
-  }
+
+    const cart = JSON.parse(request.cookie('cart', JSON.stringify([]))) as Array<{ id: number; quantity: number }> 
+    
       
+    for(const ingredient of ingredients){
+      const cartItem = cart.find(item=>item.id == ingredient.id)
+      if(cartItem){
+        cartItem.quantity+=ingredient.quantity
+      }else{
+        cart.push(ingredient)
+      }
+    }
+
+    response.cookie('cart', JSON.stringify(cart))
+  }
+
+  public async update({ request, response }: HttpContext) {
+
+    const { ingredients } = request.only(['ingredients']) as { ingredients: Array<{ id: number; quantity: number }> }
+
+    if (!Array.isArray(ingredients)) {
+      console.error('[STORE] Dados inválidos: ingredientes não são um array.')
+      return response.status(400).json({ error: 'Os ingredientes devem ser um array' })
+    }
+
+    const cart = JSON.parse(request.cookie('cart', JSON.stringify([]))) as Array<{ id: number; quantity: number }> 
+
+    for(const ingredient of ingredients){
+      const cartItem = cart.findIndex(item=>item.id == ingredient.id)
+
+      if(ingredient.quantity == 0)
+      {
+        cart.splice(cartItem, 1)
+      }
+      if(cartItem){
+        cart[cartItem].quantity=ingredient.quantity
+      }
+    }
+
+    response.cookie('cart', JSON.stringify(cart))
+
+    return response.redirect().toRoute('cart.index')
+  }
 }
+
+
+
+
