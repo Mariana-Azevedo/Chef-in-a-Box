@@ -5,6 +5,7 @@ import { createRecipeValidator } from '#validators/recipe';
 import { HttpContext } from '@adonisjs/core/http';
 import db from '@adonisjs/lucid/services/db'
 
+
 export default class RecipesController{
 
   public async index({ view, request }: HttpContext) {
@@ -163,6 +164,8 @@ export default class RecipesController{
       });
     } 
   }
+
+  
 }
 
   
