@@ -79,6 +79,9 @@
       </div>
     </div>
 
+    <!-- Campo oculto para ID da receita -->
+    <input type="hidden" id="recipe-id" value="{{ recipe.id }}" />
+
     <button class="btn m-8 btn-primary" onclick="addToCart()">Adicionar ao carrinho</button>
     <dialog id="my_modal_3" class="modal">
       <div class="modal-box">
@@ -141,18 +144,14 @@
     document.getElementById('recipe-totalPrice').textContent = totalPrice.toFixed(2);
   }
 
-  async function addToCart(userId) {
-    const ingredients = [];
+  async function addToCart() {
+    const recipeId = parseInt(document.getElementById('recipe-id').value); // ID da receita
+    const quantity = totalQuantity; // Quantidade da receita selecionada pelo usuário
 
-
-    document.querySelectorAll('.quantity-span').forEach((element) => {
-      const id = parseInt(element.getAttribute('data-id'));
-      console.log(id)
-      const baseQuantity = parseFloat(element.getAttribute('data-base-quantity'));
-      const quantity = baseQuantity * totalQuantity;
-
-      ingredients.push({ id, quantity });
-    });
+    if (!recipeId || quantity <= 0) {
+      console.error('Dados inválidos: recipeId ou quantity não definidos corretamente.');
+      return;
+    }
 
     try {
       const response = await fetch(`/cart/store`, {
@@ -160,14 +159,17 @@
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ ingredients }),
+        body: JSON.stringify({
+          recipe: { id: recipeId, quantity },
+        }),
       });
 
       if (response.ok) {
-        console.log('Itens adicionados ao carrinho com sucesso!');
-        my_modal_3.showModal();
+        console.log('Receita adicionada ao carrinho com sucesso!');
+        const modal = document.getElementById('my_modal_3');
+        if (modal) modal.showModal(); // Mostra o modal
       } else {
-        console.error('Erro ao adicionar itens ao carrinho');
+        console.error('Erro ao adicionar receita ao carrinho');
       }
     } catch (error) {
       console.error('Erro ao enviar requisição:', error);

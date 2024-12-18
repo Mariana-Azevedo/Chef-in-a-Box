@@ -33,12 +33,6 @@ export default class Ingredient extends BaseModel {
     })
     declare recipes: ManyToMany<typeof Recipe>
 
-    @manyToMany(() => Cart, {
-        pivotTable: 'carts_ingredients', 
-        pivotColumns: ['quantity'],
-    })
-    declare carts: ManyToMany<typeof Cart>
-
     @column.dateTime({ autoCreate: true })
     declare createdAt: DateTime
 
