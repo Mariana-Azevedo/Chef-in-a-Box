@@ -40,7 +40,7 @@ export default class RecipesController{
       const recipe = await Recipe.query()
         .where('id', recipeId)
         .preload('ingredients', (ingredientQuery) => {
-          ingredientQuery.select('id', 'name', 'price','unit').pivotColumns(['quantity']);
+          ingredientQuery.select('id', 'name', 'price','unit','image').pivotColumns(['quantity']);
         })
         .first();
   
@@ -70,6 +70,7 @@ export default class RecipesController{
           name: ingredient.name,
           unit: ingredient.unit,
           price: ingredient.price,
+          image: ingredient.image,
           quantity: ingredient.$extras.pivot_quantity,
         })),
       };
