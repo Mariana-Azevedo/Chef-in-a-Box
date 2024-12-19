@@ -12,7 +12,7 @@ export default class RecipesController{
     const limit = 10
 
     const query = Recipe.query().preload('ingredients', (ingredientQuery) => {
-      ingredientQuery.select('id', 'price').pivotColumns(['quantity']) // Inclua pivotColumns(['quantity'])
+      ingredientQuery.select('id', 'price', 'stock').pivotColumns(['quantity']) // Inclua pivotColumns(['quantity'])
     })
 
     const recipes = await query.paginate(page, limit)
@@ -162,6 +162,58 @@ export default class RecipesController{
         details: error.message,
       });
     } 
+  }
+
+  public async stock({ view }: HttpContext) {
+    try {
+      // Busca todos os ingredientes do banco de dados
+      const ingredients = await Ingredient.all()
+
+      // Renderiza a view 'ingredients/index' passando os ingredientes
+      return view.render('ingredients/index', { ingredients })
+    } catch (error) {
+      console.error('Erro ao buscar ingredientes:', error)
+      return view.render('errors/500', { error: 'Erro ao carregar os ingredientes.' })
+    }
+  }
+
+  public async updateStock({request}: HttpContext) {
+    try {
+      // Recebe a lista de ingredientes do corpo da requisição
+      const ingredientsToUpdate = request.input('ingredients') as Array<{ id: number; quantity: number }>
+
+      if (!Array.isArray(ingredientsToUpdate)) {
+        return {
+          status: 'error',
+          message: 'A lista de ingredientes deve ser um array',
+        }
+      }
+
+      // Atualiza cada ingrediente no banco de dados
+      for (const ingredient of ingredientsToUpdate) {
+        if (!ingredient.id || ingredient.quantity === undefined) {
+          return {
+            status: 'error',
+            message: 'Cada ingrediente deve ter um id e uma quantidade',
+          }
+        }
+
+        await Ingredient.query()
+          .where('id', ingredient.id)
+          .update({ quantity: ingredient.quantity })
+      }
+
+      return {
+        status: 'success',
+        message: 'Estoque atualizado com sucesso!',
+      }
+    } catch (error) {
+      console.error('Erro ao atualizar o estoque:', error)
+      return {
+        status: 'error',
+        message: 'Erro ao atualizar o estoque. Verifique os logs do servidor.',
+      }
+    }
   }
 }
 
