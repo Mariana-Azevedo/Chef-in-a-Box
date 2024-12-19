@@ -13,6 +13,7 @@
         @if(auth.user && auth.user.admin)
         <li><a href="{{ route('recipes.create') }}">Criar receitas</a></li>
         @end  
+        <li><a href="{{ route('recipes.stock')}}">Estoque </a></li>
         {{-- <li><a href="{{ route('users.admin')}}">Admin</a></li> --}}
       </ul>
     </div>

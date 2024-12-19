@@ -99,9 +99,13 @@
             <p class="flex justify-end font-extrabold">{{ totalPrice}}</p>
           </div>
         </div>
-        <div class="card-actions justify-end min-w-80">
-          <a  href="{{ route('cart.payment') }}" class="btn btn-success mt-6 min-w-full row">Finalizar a compra</a>
-        </div>
+        <form method="POST" action="{{ route('cart.payment') }}">
+          <div class="card-actions justify-end min-w-80">
+            <button type="submit" class="btn btn-success mt-6 min-w-full row">Finalizar a compra</button>
+          </div>
+        </form>
+        
+       
       </div>
     </div>
   </div>
