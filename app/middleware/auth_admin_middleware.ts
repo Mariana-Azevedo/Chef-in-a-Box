@@ -6,7 +6,7 @@ export default class AdminMiddleware {
     const user = ctx.auth.user;
 
     // Verifique se o usuário tem o papel de admin
-    if (user && user.role === true) {
+    if (user && user.admin) {
       await next(); // Continue a requisição
       
     } else {

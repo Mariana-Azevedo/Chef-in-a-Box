@@ -7,38 +7,72 @@
     <!-- Seção da Tabela -->
     <div class="overflow-x-auto w-3/5">
         <p class="mb-8">
-            Não está pronto para finalizar sua compra? 
+            Não está pronto para finalizar sua compra?
             <a class="font-semibold underline" href="{{ route('recipes.index') }}">Continue comprando</a>
         </p>
         <table class="table">
             <!-- Cabeçalho -->
             <thead>
                 <tr>
-                    <th>Produto</th>
-                    <th>Ingredientes</th>
+                    <th>Receitas</th>
+                    <th>Ingrediente</th>
                     <th>Preço</th>
                     <th>Quantidade</th>
+                    <th></th>
                     <th>Total</th>
                 </tr>
             </thead>
             <tbody>
-                <!-- Exemplos de linhas -->
+                @each(recipe in recipesCart)
+
+                @each(ingredient in recipe.ingredients)
                 <tr>
-                    <th>1</th>
-                    <td>Cy Ganderton</td>
-                    <td>Quality Control Specialist</td>
-                    <td>1</td>
-                    <td>R$ 100</td>
+                    <td>{{ recipe.title }} {{--{{recipe.image}} --}}</td>
+                    <td>{{ ingredient.name }}</td>
+                    <td>R${{ ingredient.price }}</td>
+                    <td>{{ ingredient.quantity }} {{ ingredient.unit }}</td>
+                    <td></td>
+                    <td>R$ {{ ingredient.price * ingredient.quantity }}</td>
                 </tr>
-                <tr>
-                    <th>2</th>
-                    <td>Hart Hagerty</td>
-                    <td>Desktop Support Technician</td>
-                    <td>2</td>
-                    <td>R$ 200</td>
-                </tr>
+                @end
+                @end
+
             </tbody>
+            <tfoot>
+                <tr class="bg-base-200">
+                  <th>Total</th>
+                  <th></th>
+                  <th></th>
+                  <th></th>
+                  <th>
+                    <div class="flex items-center space-x-2">
+                      <button class="btn btn-outline btn-error" onclick="updateTotalQuantity('decrement')">-</button>
+                      <span id="quantity-total" class="font-bold text-lg">1</span>
+                      <button class="btn btn-outline btn-success" onclick="updateTotalQuantity('increment')">+</button>
+                    </div>
+                  </th>
+                  <th id="totalPrice">R$ {{ totalPrice}}</th>
+                </tr>
+              </tfoot>
         </table>
+        
+        <form method="POST" action="{{ route('cart.update') }}?_method=PUT">
+            <button type="submit" class="btn btn-outline btn-accent">Atualizar carrinho</button>
+        </form>
+        
+        
+        <button class="btn" onclick="my_modal_1.showModal()">open modal</button>
+        <dialog id="my_modal_1" class="modal">
+            <div class="modal-box">
+                <p class="flex justify-center py-4">Você quer remover esse produto?</p>
+                <div class="flex justify-center modal-action">
+                    <form method="dialog">
+                        <button class="btn">Não</button>
+                        <button class="btn">Sim</button>
+                    </form>
+                </div>
+            </div>
+        </dialog>
     </div>
 
     <!-- Seção do Resumo da Compra -->
@@ -50,7 +84,7 @@
                 <div class="flex flex-col justify-between min-w-full text-lg">
                     <div class="flex flex-row">
                         <p class="flex justify-start">Sub-total</p>
-                        <p class="flex justify-end font-semibold	">R$ 100</p>
+                        <p class="flex justify-end font-semibold	">{{ totalPrice}}</p>
                     </div>
                     <div class="flex flex-row">
                         <p class="flex justify-start">Frete</p>
@@ -59,7 +93,7 @@
                     <div class="divider"></div>
                     <div class="flex flex-row text-2xl">
                         <p class="flex justify-start">Total</p>
-                        <p class="flex justify-end font-extrabold">R$ 150</p>
+                        <p class="flex justify-end font-extrabold">{{ totalPrice}}</p>
                     </div>
                 </div>
                 <div class="card-actions justify-end min-w-80">
@@ -70,4 +104,76 @@
         </div>
     </div>
 </div>
+
+<script>
+    let totalQuantity = 1;
+  
+    function updateTotalQuantity(action) {
+      if (action === 'increment') {
+        totalQuantity++;
+      } else if (action === 'decrement' && totalQuantity > 1) {
+        totalQuantity--;
+      }
+  
+      document.getElementById('quantity-total').textContent = totalQuantity;
+      updateAllIngredients();
+    }
+  
+    function updateAllIngredients() {
+      let totalPrice = 0;
+  
+      const ingredients = document.querySelectorAll('tbody tr');
+      ingredients.forEach((ingredientRow) => {
+        const priceElement = ingredientRow.querySelector('.price');
+        const quantityElement = ingredientRow.querySelector('.quantity-span');
+        const totalElement = ingredientRow.querySelector('.total');
+  
+        const baseQuantity = parseFloat(quantityElement.getAttribute('data-base-quantity'));
+        const unitPrice = parseFloat(priceElement.getAttribute('data-base-price'));
+  
+        const newQuantity = baseQuantity * totalQuantity;
+        const totalIngredientPrice = unitPrice * totalQuantity;
+  
+        quantityElement.textContent = `${newQuantity} ${quantityElement.getAttribute('data-unit')}`;
+        totalElement.textContent = `R$ ${totalIngredientPrice.toFixed(2)}`;
+  
+        totalPrice += totalIngredientPrice;
+      });
+  
+      document.getElementById('totalPrice').textContent = `R$ ${totalPrice.toFixed(2)}`;
+      document.getElementById('recipe-totalPrice').textContent = totalPrice.toFixed(2);
+    }
+  
+    async function addToCart() {
+      const recipeId = parseInt(document.getElementById('recipe-id').value); // ID da receita
+      const quantity = totalQuantity; // Quantidade da receita selecionada pelo usuário
+  
+      if (!recipeId || quantity <= 0) {
+        console.error('Dados inválidos: recipeId ou quantity não definidos corretamente.');
+        return;
+      }
+  
+      try {
+        const response = await fetch(`/cart/store`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            recipe: { id: recipeId, quantity },
+          }),
+        });
+  
+        if (response.ok) {
+          console.log('Receita adicionada ao carrinho com sucesso!');
+          const modal = document.getElementById('my_modal_3');
+          if (modal) modal.showModal(); // Mostra o modal
+        } else {
+          console.error('Erro ao adicionar receita ao carrinho');
+        }
+      } catch (error) {
+        console.error('Erro ao enviar requisição:', error);
+      }
+    }
+  </script>
 @end

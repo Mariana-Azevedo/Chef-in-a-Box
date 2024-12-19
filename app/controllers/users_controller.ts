@@ -70,7 +70,7 @@ export default class UsersController {
       const user = await User.findOrFail(params.id);
 
       // Atualize o papel do usuário para "admin"
-      user.role = true;
+      user.admin = true;
       await user.save();
 
       return view.render('pages/user/permissions');

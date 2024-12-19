@@ -26,7 +26,7 @@ export default class User extends compose(BaseModel, AuthFinder) {
   declare password: string
 
   @column()
-  declare role: boolean
+  declare admin: boolean
 
   @hasOne(() => Cart, {
     foreignKey: 'userId', // Corrigido para a chave correta

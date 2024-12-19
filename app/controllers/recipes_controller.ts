@@ -134,7 +134,7 @@ export default class RecipesController{
   }
 
   async create({ view }: HttpContext) {
-
+    console.log("AAAAAAAAAAAAAA")
     return view.render('pages/createRecipe')
 
   }

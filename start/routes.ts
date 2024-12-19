@@ -40,7 +40,7 @@ router
 
 router
   .group(() => {
-    router.get('/new', [RecipesController, 'create']).as('recipes.create').use([middleware.auth(), middleware.admin]);
+    router.get('/new', [RecipesController, 'create']).as('recipes.create').use([middleware.auth(), middleware.admin()]);
     router.get('/', [RecipesController, 'index']).as('recipes.index').use(middleware.silent());
     router.get('/:id', [RecipesController, 'show']).as('recipes.show').use(middleware.silent());
     router.post('/', [RecipesController, 'store']).as('recipes.store').use(middleware.auth());
@@ -55,9 +55,9 @@ router
     return view.render('pages/home.edge')
   })
 
-  router.get('/permissoes', ({view}) => {
-    return view.render('pages/user/permissions.edge')
-  })
+  // router.get('/permissoes', ({view}) => {
+  //   return view.render('pages/user/permissions.edge')
+  // })
 
 
   
