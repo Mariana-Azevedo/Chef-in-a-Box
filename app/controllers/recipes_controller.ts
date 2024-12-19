@@ -166,12 +166,14 @@ export default class RecipesController{
   }
 
   public async stock({ view }: HttpContext) {
+
+    console.log("aaaaa")
     try {
       // Busca todos os ingredientes do banco de dados
       const ingredients = await Ingredient.all()
 
       // Renderiza a view 'ingredients/index' passando os ingredientes
-      return view.render('ingredients/index', { ingredients })
+      return view.render('pages/stock', { ingredients })
     } catch (error) {
       console.error('Erro ao buscar ingredientes:', error)
       return view.render('errors/500', { error: 'Erro ao carregar os ingredientes.' })

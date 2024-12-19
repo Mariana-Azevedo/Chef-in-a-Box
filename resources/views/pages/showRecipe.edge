@@ -118,31 +118,37 @@
     document.getElementById('quantity-total').textContent = totalQuantity;
     updateAllIngredients();
   }
-
   function updateAllIngredients() {
-    let totalPrice = 0;
+  let totalPrice = 0;
 
-    const ingredients = document.querySelectorAll('tbody tr');
-    ingredients.forEach((ingredientRow) => {
-      const priceElement = ingredientRow.querySelector('.price');
-      const quantityElement = ingredientRow.querySelector('.quantity-span');
-      const totalElement = ingredientRow.querySelector('.total');
+  const ingredients = document.querySelectorAll('tbody tr');
+  ingredients.forEach((ingredientRow) => {
+    const priceElement = ingredientRow.querySelector('.price');
+    const quantityElement = ingredientRow.querySelector('.quantity-span');
+    const totalElement = ingredientRow.querySelector('.total');
 
-      const baseQuantity = parseFloat(quantityElement.getAttribute('data-base-quantity'));
-      const unitPrice = parseFloat(priceElement.getAttribute('data-base-price'));
+    const baseQuantity = parseFloat(quantityElement.getAttribute('data-base-quantity'));
+    const unitPrice = parseFloat(priceElement.getAttribute('data-base-price'));
 
-      const newQuantity = baseQuantity * totalQuantity;
-      const totalIngredientPrice = unitPrice * totalQuantity;
+    // Calcula a nova quantidade total considerando o totalQuantity
+    const newQuantity = baseQuantity * totalQuantity;
 
-      quantityElement.textContent = `${newQuantity} ${quantityElement.getAttribute('data-unit')}`;
-      totalElement.textContent = `R$ ${totalIngredientPrice.toFixed(2)}`;
+    // Calcula o preço total do ingrediente considerando a nova quantidade
+    const totalIngredientPrice = newQuantity * unitPrice;
 
-      totalPrice += totalIngredientPrice;
-    });
+    // Atualiza os valores no DOM
+    quantityElement.textContent = `${newQuantity} ${quantityElement.getAttribute('data-unit')}`;
+    totalElement.textContent = `R$ ${totalIngredientPrice.toFixed(2)}`;
 
-    document.getElementById('totalPrice').textContent = `R$ ${totalPrice.toFixed(2)}`;
-    document.getElementById('recipe-totalPrice').textContent = totalPrice.toFixed(2);
-  }
+    // Acumula o total geral
+    totalPrice += totalIngredientPrice;
+  });
+
+  // Atualiza o preço total geral no DOM
+  document.getElementById('totalPrice').textContent = `R$ ${totalPrice.toFixed(2)}`;
+  document.getElementById('recipe-totalPrice').textContent = totalPrice.toFixed(2);
+}
+
 
   async function addToCart() {
     const recipeId = parseInt(document.getElementById('recipe-id').value); // ID da receita

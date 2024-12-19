@@ -104,7 +104,9 @@ export default class CartsController {
       }
     })
     
-    
+    return response
+    .cookie('cart', JSON.stringify([]))
+    .redirect().toRoute('recipes.index')
   }
 }
 
