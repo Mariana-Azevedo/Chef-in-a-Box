@@ -66,29 +66,10 @@ export default class CartsController {
     response.cookie('cart', JSON.stringify(cart))
   }
 
-  public async update({ request, response }: HttpContext) {
-
-    const { recipes } = request.only(['recipes']) as { recipes: Array<{ id: number; quantity: number }> }
-
-
-    const cart = JSON.parse(request.cookie('cart', JSON.stringify([]))) as Array<{ id: number; quantity: number }> 
-
-
-    for(const recipe in recipes){
-      const cartItem = cart.findIndex((item: { id: number; })=>item.id == recipes[recipe].id)
-
-      if(recipes[recipe].quantity == 0)
-      {
-        cart.splice(cartItem, 1)
-      }
-      if(cartItem){
-        cart[cartItem].quantity=recipes[recipe].quantity
-      }
-    }
-
-    response.cookie('cart', JSON.stringify(cart))
-
-    return response.redirect().toRoute('cart.index')
+  public async destroy({ response }: HttpContext) {
+    return response
+      .cookie('cart', JSON.stringify([]))
+      .redirect().toRoute('cart.index')
   }
 
   public async payment({request,response}: HttpContext) {
