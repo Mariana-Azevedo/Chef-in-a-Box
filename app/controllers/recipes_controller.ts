@@ -26,7 +26,8 @@ export default class RecipesController{
       instructions: recipe.instructions,
       cuisine: recipe.cuisine,
       image: recipe.image,
-      totalPrice: recipe.ingredients.reduce((acc, ingredient) => acc+ingredient.price*ingredient.$extras.pivot_quantity,0)
+      totalPrice: (recipe.ingredients.reduce((acc, ingredient) => acc+ingredient.price*ingredient.$extras.pivot_quantity,0)) * 1.06
+
     }))
 
     return view.render('pages/home/index', { recipes: recipesWithPrices })
@@ -180,10 +181,10 @@ export default class RecipesController{
     }
   }
 
-  public async updateStock({request}: HttpContext) {
+  public async updateStock({request, response}: HttpContext) {
     try {
       // Recebe a lista de ingredientes do corpo da requisição
-      const ingredientsToUpdate = request.input('ingredients') as Array<{ id: number; quantity: number }>
+      const ingredientsToUpdate = request.input('ingredients') as Array<{ id: number; stock: number }>
 
       if (!Array.isArray(ingredientsToUpdate)) {
         return {
@@ -194,22 +195,21 @@ export default class RecipesController{
 
       // Atualiza cada ingrediente no banco de dados
       for (const ingredient of ingredientsToUpdate) {
-        if (!ingredient.id || ingredient.quantity === undefined) {
+        if (!ingredient.id || ingredient.stock === undefined) {
           return {
             status: 'error',
-            message: 'Cada ingrediente deve ter um id e uma quantidade',
+            message: 'Cada ingrediente deve ter um id e uma estoque',
           }
         }
 
         await Ingredient.query()
           .where('id', ingredient.id)
-          .update({ quantity: ingredient.quantity })
+          .update({ stock: ingredient.stock })
       }
 
-      return {
-        status: 'success',
-        message: 'Estoque atualizado com sucesso!',
-      }
+
+    return response.redirect().toRoute('recipes.stock')
+      
     } catch (error) {
       console.error('Erro ao atualizar o estoque:', error)
       return {
@@ -217,6 +217,7 @@ export default class RecipesController{
         message: 'Erro ao atualizar o estoque. Verifique os logs do servidor.',
       }
     }
+
   }
 }
 

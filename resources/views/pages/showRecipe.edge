@@ -56,7 +56,7 @@
                     data-unit="{{ ingredient.unit }}">
                   {{ ingredient.quantity }} {{ ingredient.unit }}
                 </td>
-                <td class="total">R$ {{ ingredient.price.toFixed(2) }}</td>
+                <td class="total">R$ {{ ingredient.price.toFixed(2) * ingredient.quantity }}</td>
               </tr>
               @endeach
             </tbody>
@@ -71,7 +71,7 @@
                     <button class="btn btn-outline btn-success" onclick="updateTotalQuantity('increment')">+</button>
                   </div>
                 </th>
-                <th id="totalPrice">R$ {{ recipe.totalPrice.toFixed(2) }}</th>
+                <th id="totalPrice">R$ {{ recipe.totalPrice.toFixed(2) * 1.06}}</th>
               </tr>
             </tfoot>
           </table>
@@ -141,7 +141,7 @@
     totalElement.textContent = `R$ ${totalIngredientPrice.toFixed(2)}`;
 
     // Acumula o total geral
-    totalPrice += totalIngredientPrice;
+    totalPrice += totalIngredientPrice * 1.06;
   });
 
   // Atualiza o preço total geral no DOM
