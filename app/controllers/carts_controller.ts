@@ -4,40 +4,39 @@ import { HttpContext } from "@adonisjs/core/http"
 import db from "@adonisjs/lucid/services/db";
 
 export default class CartsController {
-  public async index({ request,view }: HttpContext) {
-  
-    const cart = JSON.parse(request.cookie('cart', JSON.stringify([]))) as Array<{ id: number; quantity: number }> 
+  public async index({ request, view }: HttpContext) {
+    const cart = JSON.parse(request.cookie('cart', JSON.stringify([]))) as Array<{ id: number; quantity: number }>;
 
-    console.log(cart)
     const recipes = await Recipe.query()
-    .whereIn(
-      'id',
-      cart.map((item) => item.id)
-    )
-    .preload('ingredients', (ingredientQuery) => {
-      ingredientQuery.select('id', 'name', 'price','unit', 'image').pivotColumns(['quantity']);
-    })
-    .exec()
+      .whereIn(
+        'id',
+        cart.map((item) => item.id)
+      )
+      .preload('ingredients', (ingredientQuery) => {
+        ingredientQuery.select('id', 'name', 'price', 'unit', 'image').pivotColumns(['quantity']);
+      });
 
-    console.log(recipes)
-    const recipesCart = [] as Record<string,any>[]
-    for(const recipe in recipes){
+    const recipesCart = [] as Record<string, any>[];
+    let totalPrice = 0; // Use "let" para permitir modificações.
 
-      const totalPrice = recipes[recipe].ingredients.reduce(
+    for (const recipe of recipes) { // Use "for...of" para iterar diretamente sobre os objetos.
+      const recipeTotal = recipe.ingredients.reduce(
         (total, ingredient) =>
           total + ingredient.price * ingredient.$extras.pivot_quantity,
         0
       );
 
-      recipesCart[recipe] = {
-        id: recipes[recipe].id,
-        title: recipes[recipe].title,
-        description: recipes[recipe].description,
-        instructions: recipes[recipe].instructions,
-        cuisine: recipes[recipe].cuisine,
-        image: recipes[recipe].image,
-        totalPrice,
-        ingredients: recipes[recipe].ingredients.map((ingredient) => ({
+      totalPrice += recipeTotal;
+
+      recipesCart.push({
+        id: recipe.id,
+        title: recipe.title,
+        description: recipe.description,
+        instructions: recipe.instructions,
+        cuisine: recipe.cuisine,
+        image: recipe.image,
+        totalPrice: recipeTotal,
+        ingredients: recipe.ingredients.map((ingredient) => ({
           id: ingredient.id,
           name: ingredient.name,
           unit: ingredient.unit,
@@ -45,11 +44,10 @@ export default class CartsController {
           image: ingredient.image,
           quantity: ingredient.$extras.pivot_quantity,
         })),
-      };
+      });
     }
 
-    console.log("vai")
-    return view.render('pages/products/cart.edge', { recipesCart })
+    return view.render('pages/products/cart.edge', { recipesCart, totalPrice });
   }
 
   public async store({ request, response }: HttpContext) {

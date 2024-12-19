@@ -49,18 +49,45 @@ export default class UsersController {
     }
   }
 
-  public async profile({ view, params }: HttpContext) {
+  public async profile({ view, params, auth }: HttpContext) {
     console.log(params.id)
-    const userId = params.id;
-    const user = await User.findByOrFail('id',userId)
+    // const userId = params.id;
+    const {user} = auth
 
     const returnUser ={
-      fullName: user.fullName,
-      email: user.email,
-      id: user.id,
+      fullName: user?.fullName,
+      email: user?.email,
+      id: user?.id,
     } 
     
     return view.render('pages/user/profile', { returnUser })
   }
+
+
+  public async admin({ params, response, view }: HttpContext) {
+    try {
+      // Encontre o usuário pelo ID fornecido
+      const user = await User.findOrFail(params.id);
+
+      // Atualize o papel do usuário para "admin"
+      user.admin = true;
+      await user.save();
+
+      return view.render('pages/user/permissions');
+
+      return response.status(200).send({ message: `Usuário ${user.fullName} agora é administrador.` });
+    } catch (error) {
+      return response.status(400).send({ error: 'Erro ao promover o usuário a admin.', details: error.message });
+    }
+
+   }
+
+  public async listNonAdmins({ response }: HttpContext) {
+    const nonAdmins = await User.query().whereNot('role', 'admin');
+    return response.status(200).send(nonAdmins);
+  }
+  
+  
+  
 }
 
