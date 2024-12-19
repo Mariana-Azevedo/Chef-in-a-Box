@@ -23,19 +23,10 @@
       </thead>
       <tbody>
         @each(recipe in recipesCart)
-        <td class="flex flex-row justify-between">{{ recipe.title }} {{--{{recipe.image}} --}}
-
-          <div class="flex items-center space-x-2">
-            <button class="btn btn-outline btn-error"
-              onclick="updateTotalQuantity('decrement', {{ recipe.price }}, {{ recipe.id }})">-</button>
-            <span id="quantity-total" class="font-bold text-lg">1</span>
-            <button class="btn btn-outline btn-success"  onclick="updateTotalQuantity('increment', {{ recipe.price }}, {{ recipe.id }})">+</button>
-          </div>
-
-        </td>
         @each(ingredient in recipe.ingredients)
         <tr>
-          <td></td>
+          <td>{{ recipe.title }} {{--{{recipe.image}} --}}
+          </td>
           <td></td>
           <td></td>
           <td>{{ ingredient.name }}</td>
@@ -61,12 +52,18 @@
       </tfoot>
     </table>
 
-    <form method="POST" action="{{ route('cart.update') }}?_method=PUT">
+    {{--  <form method="POST" action="{{ route('cart.update') }}?_method=PUT">
       <button type="submit" class="btn btn-outline btn-accent">Atualizar carrinho</button>
-    </form>
+    </form>  --}}
+    <form method="POST" action="{{ route('cart.destroy') }}?_method=PUT">
+      <div class="flex mt-6">
+        <button class="btn btn-primary">Apagar</button>
+      </div>
+    </form> 
+    
 
 
-    <button class="btn" onclick="my_modal_1.showModal()">open modal</button>
+    {{--  <button class="btn" onclick="my_modal_1.showModal()">open modal</button>
     <dialog id="my_modal_1" class="modal">
       <div class="modal-box">
         <p class="flex justify-center py-4">Você quer remover esse produto?</p>
@@ -78,6 +75,7 @@
         </div>
       </div>
     </dialog>
+      --}}
   </div>
 
   <!-- Seção do Resumo da Compra -->
@@ -110,27 +108,5 @@
   </div>
 </div>
 
-<script>
-  // Inicializa variáveis
-  let totalQuantity = 1;
-  let totalPrice = {{ totalPrice }}; // Use o valor inicial do total do carrinho
-  const pricePerUnit = {{ pricePerUnit }}; // Substitua por um valor do servidor, como o preço de uma receita
-
-  // Função para atualizar a quantidade e o preço total
-  function updateTotalQuantity(action) {
-    if (action === 'increment') {
-      totalQuantity++;
-    } else if (action === 'decrement' && totalQuantity > 1) {
-      totalQuantity--;
-    }
-
-    // Atualiza o preço total com base na quantidade
-    const newTotalPrice = totalQuantity * pricePerUnit;
-
-    // Atualiza os elementos na tela
-    document.getElementById('quantity-total').textContent = totalQuantity;
-    document.getElementById('totalPrice').textContent = `R$ ${newTotalPrice.toFixed(2)}`;
-  }
-</script>
 
 @end
