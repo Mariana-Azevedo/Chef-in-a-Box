@@ -5,48 +5,63 @@
     <div class="flex flex-col">
       <h1 class="text-7xl font-bold py-7">Gerenciar Estoque de Ingredientes</h1>
       <div class="overflow-x-auto">
-        <table class="table">
-          <!-- Cabeçalho -->
-          <thead>
-            <tr>
-              <th>Ingredientes</th>
-              <th>Preço</th>
-              <th>Unidade</th>
-              <th>Estoque</th>
-
-            </tr>
-          </thead>
-          <tbody>
-            <!-- Loop dos ingredientes -->
-            @each(ingredient in ingredients)
-            <tr>
-              <td>
-                <div class="flex items-center gap-3">
-                  <div class="avatar">
-                    <div class="mask mask-squircle h-12 w-12">
-                      <img src="{{ ingredient.image }}" alt="{{ ingredient.name }}" />
+        <form action="{{ route('recipes.updateStock') }}" method="POST">
+          <table class="table">
+            <!-- Cabeçalho -->
+            <thead>
+              <tr>
+                <th>Ingredientes</th>
+                <th>Preço</th>
+                <th>Unidade</th>
+                <th>Estoque Atual</th>
+                <th>Estoque</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Loop dos ingredientes -->
+              @each(ingredient in ingredients)
+              <tr>
+                <td>
+                  <div class="flex items-center gap-3">
+                    <div class="avatar">
+                      <div class="mask mask-squircle h-12 w-12">
+                        <img src="{{ ingredient.image }}" alt="{{ ingredient.name }}" />
+                      </div>
+                    </div>
+                    <div>
+                      <div class="font-bold">{{ ingredient.name }}</div>
                     </div>
                   </div>
-                  <div>
-                    <div class="font-bold">{{ ingredient.name }}</div>
-                  </div>
-                </div>
-              </td>
-              <td>R$ {{ ingredient.price.toFixed(2) }}</td>
-              <td>{{ ingredient.unit }}</td>
-              <td>
-                <input type="number" placeholder="Qtd" class="input max-w-24 input-bordered input-accent " />
-              </td>
-            </tr>
-            @endeach
-          </tbody>
-        </table>
+                </td>
+                <td>R$ {{ ingredient.price.toFixed(2) }}</td>
+                <td>{{ ingredient.unit }}</td>
+                <td>{{ ingredient.stock }}</td>
+                <td>
+                  <!-- Campo hidden para ID -->
+                  <input 
+                    type="hidden" 
+                    name="ingredients[][id]" 
+                    value="{{ ingredient.id }}" 
+                  />
+                  <!-- Campo para o estoque -->
+                  <input 
+                    type="number" 
+                    name="ingredients[][stock]" 
+                    placeholder="{{ ingredient.stock }}" 
+                    class="input max-w-24 input-bordered input-accent" 
+                  />
+                </td>
+              </tr>
+              @endeach
+            </tbody>
+          </table>
+          <!-- Botão para salvar -->
+          <div class="flex justify-center">
+            <button type="submit" class="btn m-8 min-w-80 btn-accent">Salvar</button>
+          </div>
+        </form>
       </div>
     </div>
   </div>
-
 </div>
-<div class="flex justify-center">
-  <a class="btn m-8 min-w-80 btn-accent">Salvar</a></div>
-
 @end

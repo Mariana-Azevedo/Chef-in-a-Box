@@ -6,6 +6,7 @@ import { HttpContext } from '@adonisjs/core/http';
 import db from '@adonisjs/lucid/services/db'
 
 
+
 export default class RecipesController{
 
   public async index({ view, request }: HttpContext) {
@@ -135,7 +136,7 @@ export default class RecipesController{
   }
 
   async create({ view }: HttpContext) {
-    console.log("AAAAAAAAAAAAAA")
+   
     return view.render('pages/createRecipe')
 
   }
@@ -168,7 +169,6 @@ export default class RecipesController{
 
   public async stock({ view }: HttpContext) {
 
-    console.log("aaaaa")
     try {
       // Busca todos os ingredientes do banco de dados
       const ingredients = await Ingredient.all()
@@ -181,35 +181,49 @@ export default class RecipesController{
     }
   }
 
-  public async updateStock({request, response}: HttpContext) {
+  public async updateStock({ request, response }: HttpContext) {
     try {
-      // Recebe a lista de ingredientes do corpo da requisição
-      const ingredientsToUpdate = request.input('ingredients') as Array<{ id: number; stock: number }>
+      // Pega os dados enviados do formulário
+      const ingredientsToUpdate = request.input('ingredients')
 
+      // Verifica se é um array
       if (!Array.isArray(ingredientsToUpdate)) {
-        return {
+        return response.status(400).json({
           status: 'error',
           message: 'A lista de ingredientes deve ser um array',
-        }
+        })
       }
 
-      // Atualiza cada ingrediente no banco de dados
+      // Verifica cada ingrediente
       for (const ingredient of ingredientsToUpdate) {
+        console.log('Recebido do front-end:', ingredient)
+        // Verifica se o objeto tem id e stock
         if (!ingredient.id || ingredient.stock === undefined) {
-          return {
+          return response.status(400).json({
             status: 'error',
-            message: 'Cada ingrediente deve ter um id e uma estoque',
-          }
+            message: 'Cada ingrediente deve ter um id e um estoque',
+          })
         }
 
-        await Ingredient.query()
-          .where('id', ingredient.id)
-          .update({ stock: ingredient.stock })
+        // Converte o id e o stock para número, caso venham como string
+        const id = Number(ingredient.id)
+        const stock = Number(ingredient.stock)
+
+        if (isNaN(id) || isNaN(stock)) {
+          return response.status(400).json({
+            status: 'error',
+            message: 'id e stock devem ser valores numéricos válidos',
+          })
+        }
+
+        // Faz o update individual de cada ingrediente
+        await Ingredient
+          .query()
+          .where('id', id)
+          .update({ stock: stock })
       }
 
-
-    return response.redirect().toRoute('recipes.stock')
-      
+      return response.redirect().toRoute('recipes.stock')
     } catch (error) {
       console.error('Erro ao atualizar o estoque:', error)
       return {
@@ -217,7 +231,6 @@ export default class RecipesController{
         message: 'Erro ao atualizar o estoque. Verifique os logs do servidor.',
       }
     }
-
   }
 }
 
