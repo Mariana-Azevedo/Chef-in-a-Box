@@ -1,0 +1,98 @@
+@layouts.app()
+@!navbar()
+<div class="flex justify-center">
+  <div class="p-12">
+    <div class="flex flex-col">
+      <h1 class="text-7xl font-bold py-7">Gerenciar Estoque de Ingredientes</h1>
+      <div class="overflow-x-auto">
+        <table class="table">
+          <!-- Cabeçalho -->
+          <thead>
+            <tr>
+              <th>Ingredientes</th>
+              <th>Preço</th>
+              <th>Unidade</th>
+              <th>Estoque</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Loop dos ingredientes -->
+            @each(ingredient in ingredients)
+            <tr>
+              <td>
+                <div class="flex items-center gap-3">
+                  <div class="avatar">
+                    <div class="mask mask-squircle h-12 w-12">
+                      <img src="{{ ingredient.image }}" alt="{{ ingredient.name }}" />
+                    </div>
+                  </div>
+                  <div>
+                    <div class="font-bold">{{ ingredient.name }}</div>
+                  </div>
+                </div>
+              </td>
+              <td>R$ {{ ingredient.price.toFixed(2) }}</td>
+              <td>{{ ingredient.unit }}</td>
+              <td>
+                <div class="flex items-center space-x-2">
+                  <button class="btn btn-outline btn-error" onclick="updateStock('decrement', {{ ingredient.id }})">-</button>
+                  <span id="quantity-{{ ingredient.id }}" class="font-bold text-lg">{{ ingredient.stock }}</span>
+                  <button class="btn btn-outline btn-success" onclick="updateStock('increment', {{ ingredient.id }})">+</button>
+                </div>
+              </td>
+            </tr>
+            @endeach
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  async function updateStock(action, ingredientId) {
+    const quantityElement = document.getElementById(`quantity-${ingredientId}`);
+
+    if (!quantityElement) {
+      console.error('Elemento de quantidade não encontrado para o ID:', ingredientId);
+      return;
+    }
+
+    let currentStock = parseFloat(quantityElement.textContent);
+
+    if (action === 'increment') {
+      currentStock++;
+    } else if (action === 'decrement' && currentStock > 0) {
+      currentStock--;
+    } else {
+      console.warn('Ação inválida ou quantidade menor que zero');
+      return;
+    }
+
+    // Atualiza no DOM
+    quantityElement.textContent = currentStock;
+
+    // Envia a atualização para o backend
+    try {
+      const response = await fetch(`/ingredients/update`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+        },
+        body: JSON.stringify({ id: ingredientId, stock: currentStock }),
+      });
+
+      if (!response.ok) {
+        console.error('Erro ao atualizar o estoque:', response.statusText);
+        return;
+      }
+
+      console.log('Estoque atualizado com sucesso!');
+    } catch (error) {
+      console.error('Erro ao enviar atualização do estoque:', error);
+    }
+  }
+</script>
+@end

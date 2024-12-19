@@ -46,10 +46,11 @@ router
     router.get('/:id', [RecipesController, 'show']).as('recipes.show').use(middleware.silent());
     router.post('/', [RecipesController, 'store']).as('recipes.store').use(middleware.auth());
     router.delete('/:id',[RecipesController, 'destroy']).as('recipes.destroy' ).use(middleware.auth());
+    //router.get('/stock',[RecipesController, 'stock']).as('recipes.stock' ).use(middleware.auth());
   })
   .prefix('recipes')
 
-
+  router.get('/stock',[RecipesController, 'stock']).as('recipes.stock' ).use(middleware.auth());
 
 
   router.get('/home', ({view}) => {
