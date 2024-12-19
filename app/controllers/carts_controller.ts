@@ -102,8 +102,11 @@ export default class CartsController {
           await Ingredient.query({ client: trx }).where('id', ingredient.id).update({ stock: ingredient.stock})
         }
       }
+
     })
-    
+    return response
+    .cookie('cart', JSON.stringify([]))
+    .redirect().toRoute('recipes.index')
     
   }
 }
